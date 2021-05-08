@@ -40,6 +40,8 @@
 					<form class="form-check" id="selectGroups" method="post">
 
 						<h5>Taught groups:</h5><br>
+						{{ the_selectedgroups }}<br>
+
 						{% for group in the_allGroups%}
 
 							{% if group in the_teachersGroups %}

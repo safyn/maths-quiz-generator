@@ -4,6 +4,7 @@ from qu import generateQuestions, calculateResults
 from datetime import datetime
 from datetime import timedelta
 
+
 connection = {
     "host": "127.0.0.1",
     "user": "root",
@@ -23,7 +24,7 @@ def createQuiz(data):
     id = ""
 
     with DBcm.UseDatabase(connection) as mycursor:
-        SQL = """INSERT into quiz (class,quizDate,startTime,endTime,quadraticQuestion,simultaneousQuestion,termsOfQuestion,quizName)
+        SQL = """INSERT into quiz (groupName,quizDate,startTime,endTime,quadraticQuestion,simultaneousQuestion,termsOfQuestion,quizName)
              VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"""
 
         mycursor.execute(SQL, (
@@ -97,7 +98,7 @@ def checkQuiz(group, date):
     # databaseTime = (datetime.now() + deltatime(hours=1)).strftime("%H:%M:%S")
     with DBcm.UseDatabase(connection) as mycursor:
 
-        SQL = "select quizID from quiz where class = '%s' and DATE(quizDate) = '%s' and  " \
+        SQL = "select quizID from quiz where groupName = '%s' and DATE(quizDate) = '%s' and  " \
               "'%s' >= startTime and '%s' <= endTime" % (group, date, t, t)
 
         mycursor.execute(SQL)
@@ -176,13 +177,13 @@ def isCompleted(quizID, userID):
 def getStudentGroups(teacherID=None):
     with DBcm.UseDatabase(connection) as mycursor:
         if teacherID is not None:
-            SQL = "select groupName from studentgroup where teacherID = '%s'" % teacherID
+            SQL = "select groupName from teacherGroups where teacherID = '%s'" % teacherID
             mycursor.execute(SQL)
             studentGroups = mycursor.fetchall()
             if studentGroups is None:
                 return False
         else:
-            SQL = "select groupName from studentgroup"
+            SQL = "select groupName from teachingGroups"
             mycursor.execute(SQL)
             studentGroups = mycursor.fetchall()
 
@@ -201,7 +202,7 @@ def listTuplesToList(listTuples):
 
 def selectQuizes(group):
     with DBcm.UseDatabase(connection) as mycursor:
-        SQL = "select quizID,quizName,quizDate from quiz where class = '%s'" % group
+        SQL = "select quizID,quizName,quizDate from quiz where groupName = '%s'" % group
         mycursor.execute(SQL)
         quizes = mycursor.fetchall()
 
@@ -221,7 +222,9 @@ def getParticipants(quizID):
 
 def createGroup(teacherID, groupName):
     with DBcm.UseDatabase(connection) as mycursor:
-        SQL = "insert into studentgroup values('%s','%s')" % (teacherID, groupName)
+        SQL = "insert into teachingGroups values('%s')" % groupName
+        mycursor.execute(SQL)
+        SQL = "insert into teacherGroups values('%s','%s')" % (teacherID, groupName)
         mycursor.execute(SQL)
 
 
@@ -235,3 +238,14 @@ def quizUserInfo(userID, quizID):
         userInfo = mycursor.fetchall()
 
         return listTuplesToList(userInfo)
+
+def changeTeacherGroups(groups,teacherID):
+    newgroups = groups.getlist('group')
+    with DBcm.UseDatabase(connection) as mycursor:
+        SQL = "delete from teacherGroups where teacherID = '%s'" % teacherID
+        mycursor.execute(SQL)
+        for group in newgroups:
+            SQL = "insert into teacherGroups values('%s','%s')" % (teacherID,group)
+            mycursor.execute(SQL)
+
+
