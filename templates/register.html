@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+</head>
+<body>
+<h1 align="center">Math's Quiz Generator</h1>
+<div class="register">
+    <h1>Register</h1>
+    <div class="links">
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="active">Register</a>
+    </div>
+    <form action="{{ url_for('register') }}" method="post" autocomplete="off">
+        <label for="teacher">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </label>
+        <select name="teacher" id="teacher" onchange="asd()" onselect="asd()" required>
+            <option value="" disabled selected hidden>Are you a teacher?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+
+        <label for="username">
+            <i class="fas fa-user"></i>
+        </label>
+        <input type="text" name="username" placeholder="Username" id="username" required>
+        <label for="password">
+            <i class="fas fa-lock"></i>
+        </label>
+        <input type="password" name="password" placeholder="Password" id="password" required>
+        <label for="email">
+            <i class="fas fa-envelope"></i>
+        </label>
+        <input type="email" name="email" placeholder="Email" id="email" required>
+        <label id="groupLabel" for="group">
+            <i class="fas fa-users"></i>
+        </label>
+        <select name="group" id="group" required>
+            <option value="" disabled selected hidden>Group</option>
+            {% for group in the_studentGroups%}
+                <option value="{{group}}">{{group}}</option>
+
+            {% endfor %}
+        </select>
+
+        <script type="text/javascript">
+            function asd(){
+
+            var isTeacher = document.getElementById("teacher").value;
+
+
+            if( isTeacher== "true"){
+            document.getElementById("group").style.display = "none";
+            document.getElementById("group").disabled = true;
+            document.getElementById("groupLabel").style.display = "none";
+
+            }
+            else{
+            document.getElementById("groupLabel").style.display = "inherit";
+            document.getElementById("group").style.display = "inherit";
+            document.getElementById("group").disabled = false;
+            }
+            }
+
+
+        </script>
+
+        <div class="msg">{{ msg }}</div>
+        <input type="submit" value="Register">
+    </form>
+</div>
+</body>
+</html>

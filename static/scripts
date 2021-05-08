@@ -1,0 +1,43 @@
+
+	var radioA = document.getElementsByClassName("radioa");
+	var radioB = document.getElementsByClassName("radiob");
+    var radioC = document.getElementsByClassName("radioc");
+    var radioD = document.getElementsByClassName("radiod");
+	var selectedAnswer = document.getElementsByClassName("selectedAnswer");
+
+
+    var a = document.getElementsByClassName("a");
+    var b = document.getElementsByClassName("b");
+    var c = document.getElementsByClassName("c");
+    var d = document.getElementsByClassName("d");
+    var sol = document.getElementsByClassName("sol");
+
+    for (i = 0; i < a.length; i++) {
+        if (a[i].textContent == sol[i].textContent) {
+            a[i].style.color = "lime";
+        }
+        else if (b[i].textContent == sol[i].textContent) {
+            b[i].style.color =  "lime";
+        }
+        else if (c[i].textContent == sol[i].textContent) {
+            c[i].style.color = "lime";
+        }
+        else if (d[i].textContent == sol[i].textContent) {
+            d[i].style.color = "lime";
+        }
+
+		if (a[i].textContent == selectedAnswer[i].textContent) {
+	        radioA[i].checked = true;
+		}
+		else if (b[i].textContent == selectedAnswer[i].textContent) {
+		  radioB[i].checked = true;
+		}
+		else if (c[i].textContent == selectedAnswer[i].textContent) {
+		   radioC[i].checked = true;
+		}
+		else if (d[i].textContent == selectedAnswer[i].textContent) {
+		   radioD[i].checked = true;
+        }
+
+    }
+

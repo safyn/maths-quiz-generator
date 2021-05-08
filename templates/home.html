@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+	<link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+	      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+
+	<p style="display:none">
+		mjx-container[jax="CHTML"][display="true"] {
+		display: none;
+		text-align: left;
+		margin: 1em 0;
+		}
+		MathJax = {
+		chtml: { displayAlign: 'left' }
+		};
+	</p>
+
+	<title>Quiz</title>
+	<style>
+        mjx-container[jax="CHTML"][display="true"] {
+            display: inline;
+            text-align: left;
+            margin: 1em 0;
+
+        }
+
+        .MathJax_Display {
+            text-align: left !important;
+            display: inline !important;
+        }
+
+
+	</style>
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+	<a class="navbar-brand" style="color:white">Hello {{session['username']}}</a>
+	<div class="collapse navbar-collapse">
+
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" href="/home">Home<span class="sr-only">(current)</span></a>
+			</li>
+			<li class="nav-item active">
+				<a class="nav-link" href="/quiz">Take Quiz<span class="sr-only">(current)</span></a>
+			</li>
+			{% if not session['teacher']%}
+			<li class="nav-item active">
+				<a class="nav-link" href="/studentresults">View Results<span class="sr-only">(current)</span></a>
+			</li>
+			{% endif %}
+			{% if session['teacher'] %}
+
+			<li class="nav-item active">
+				<a class="nav-link" href="/createQuiz">Create Quiz<span class="sr-only">(current)</span></a>
+			</li>
+			<li class="nav-item active">
+				<a class="nav-link" href="/teacherResults">Results<span class="sr-only">(current)</span></a>
+			</li>
+			</li>
+			<li class="nav-item active">
+				<a class="nav-link" href="/groupSettings">Group Settings<span class="sr-only">(current)</span></a>
+			</li>
+			{% endif %}
+		</ul>
+
+
+		<a class="btn btn-outline-light my-2 my-sm-0" href="/logout">Logout</a>
+
+	</div>
+</nav>
+
+<section style="margin-left:10%;">
+
+	{% block body %}
+
+
+	{% endblock %}
+
+</section>
+
+<!-- MathJax -->
+<script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        displayAlign: "left"
+    });
+
+
+
+</script>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+{% extends 'home.html' %}
+{% block body %}
+
+<section style=" margin-left:10%; margin-right:20%; margin-top:5%">
+	{{quiz_data}}
+	{{columns}}
+	<form role="form" method="POST">
+		<div class="form-group" ><h1 id="test"></h1>
+			<label >Select a group:</label>
+			<select class="studentGroup form-control" onchange="this.form.submit()" id="studentGroup" name="studentGroup" >
+				<option selected disabled hidden>Quiz Group</option>
+				{% for group in the_studentGroups%}
+				{{group}}
+				<option value="{{group}}">{{group}}</option>
+				{% endfor %}
+			</select>
+
+
+		</div>
+
+	</form>
+	{%if the_results%}
+				  <table class="table table-hover">
+		        <thead>
+		        <tr>
+		            {% for name in the_columnNames%}
+		            <th scope="col">{{name}}</th>
+		            {% endfor %}
+		        </tr>
+		        </thead>
+		        <tbody>
+		        {% for row in the_results %}
+		        <tr>
+		            <form id="bob" method ="POST" action="{{url_for('quizParticipants',quizID = row[0])}}">
+		            {% for data in row %}
+
+		                     <td>{{data}}</td>
+
+		            {% endfor %}
+		                <td style="cursor: pointer;">
+		                <input class="btn btn-outline-info" type="submit" value="View Test" for = "bob">
+		            </td>
+		            </form>
+
+		        </tr>
+		        {% endfor %}
+
+		        </tbody>
+		    </table>
+	{% endif %}
+</section>
+
+{% endblock %}

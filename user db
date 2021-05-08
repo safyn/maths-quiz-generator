@@ -1,0 +1,67 @@
+quizUser   quizPassword
+
+
+create table quiz(
+    quizID int(3) PRIMARY KEY AUTO_INCREMENT,
+    class varchar(3),
+    quizDate Date,
+    quadraticQuestion varchar(1),
+    simultaneousQuestion varchar(1),
+    termsOfQuestion varchar(1));
+
+
+
+    create table question(
+    questionNumber int(3),
+    quizID int(3),
+    equation varchar(200),
+    solution varchar(100),
+    answerA varchar(100),
+    answerB varchar(100),
+    answerC varchar(100),
+    answerD varchar(100));
+
+escaped = a_string.translate(str.maketrans({"-":  r"\-",
+                                          "]":  r"\]",
+                                          "\\": r"\\",
+                                          "^":  r"\^",
+                                          "$":  r"\$",
+                                          "*":  r"\*",
+                                          ".":  r"\."}))
+
+mysql> create table quiz(
+    -> quizID int(4) not null primary key auto_increment,
+    -> class varchar(4),
+    -> quizDate date,
+    -> startTime time,
+    -> endTime time,
+    -> quadraticQuestion varchar(1),
+    -> simultaneousQuestion varchar(1),
+    -> termsOfQuestion varchar(1));
+
+    mysql> create table user(
+    -> userID int(4) not null primary key auto_increment,
+    -> username varchar(40),
+    -> password varchar(40),
+    -> userGroup varchar(3),
+    -> email varchar(100));
+
+    mysql> create table question(
+    -> quizID int(4),
+    -> questionNumber int(3),
+    -> question varchar(300),
+    -> equation varchar(200),
+    -> solution varchar(200),
+    -> a varchar(200),
+    -> b varchar(200),
+    -> c varchar(200),
+    -> d varchar(200),
+    -> step varchar(2000));
+
+
+    mysql> create table results(
+    -> userGroup varchar(3),
+    -> quizDate date,
+    -> userID int(3),
+    -> result varchar(6),
+    -> username varchar(40));

@@ -1,0 +1,67 @@
+{% extends 'home.html' %}
+{% block body %}
+
+
+<section style=" margin-left:10%; margin-right:20%; margin-top:5%">
+
+	<section style=" margin-right:20%">
+
+		<h2>{{the_msg}}</h2><br>
+		<nav>
+			<div class="nav nav-tabs" id="nav-tab" role="tablist">
+				<a aria-controls="nav-home" aria-selected="true" class="nav-item nav-link active" data-toggle="tab"
+				   href="#nav-home"
+				   id="nav-home-tab" role="tab">Create Group</a>
+				<a aria-controls="nav-profile" aria-selected="false" class="nav-item nav-link" data-toggle="tab"
+				   href="#nav-profile"
+				   id="nav-profile-tab" role="tab">Manage Groups</a>
+			</div>
+		</nav>
+		<div class="tab-content" id="nav-tabContent">
+			<div aria-labelledby="nav-home-tab" class="tab-pane fade show active" id="nav-home" role="tabpanel"
+			     style="margin-top:3%">
+				<h3>Create Group</h3>
+				<section style="margin-right:50%;margin-top:1%">
+					<form class="form-horizontal" id="group" method="post">
+
+						<label>Enter group name</label>
+						<input class="form-control" name="groupName" type="text"><br><br>
+
+						<input class="btn btn-info" form="group" type="submit" value="Create Group">
+
+					</form>
+
+				</section>
+			</div>
+			<div aria-labelledby="nav-profile-tab" class="tab-pane fade" id="nav-profile" role="tabpanel"
+			     style="margin-top:3%">
+				<h3>Select Groups</h3>
+				<section style="margin-right:50%;margin-top:1%">
+					<form class="form-check" id="selectGroups" method="post">
+
+						<h5>Taught groups:</h5><br>
+						{% for group in the_allGroups%}
+
+							{% if group in the_teachersGroups %}
+
+							<input name="group" type="checkbox" value="{{group}}" checked>
+							<label class="g" style="margin-left:10px" >{{group}}</label><br>
+							{% else %}
+							<input name="group" type="checkbox" value="{{group}}">
+							<label class="g" style="margin-left:10px">{{group}}</label><br>
+							{% endif %}
+						{% endfor %}
+
+
+						<input class="btn btn-info" form="selectGroups" type="submit" value="Save groups">
+
+					</form>
+
+				</section>
+			</div>
+		</div>
+
+	</section>
+</section>
+
+{% endblock %}
