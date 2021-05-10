@@ -1,25 +1,38 @@
 {% extends 'home.html' %}
 {% block body %}
+<script>
+$(document).ready(function(){
+    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+        localStorage.setItem('activeTab', $(e.target).attr('href'));
+    });
+    var activeTab = localStorage.getItem('activeTab');
+    if(activeTab){
+        $('#myTab a[href="' + activeTab + '"]').tab('show');
+    }
+});
 
+
+
+
+</script>
 
 <section style=" margin-left:10%; margin-right:20%; margin-top:5%">
 
-	<section style=" margin-right:20%">
 
-		<h2>{{the_msg}}</h2><br>
-		<nav>
-			<div class="nav nav-tabs" id="nav-tab" role="tablist">
-				<a aria-controls="nav-home" aria-selected="true" class="nav-item nav-link active" data-toggle="tab"
-				   href="#nav-home"
-				   id="nav-home-tab" role="tab">Create Group</a>
-				<a aria-controls="nav-profile" aria-selected="false" class="nav-item nav-link" data-toggle="tab"
-				   href="#nav-profile"
-				   id="nav-profile-tab" role="tab">Manage Groups</a>
-			</div>
-		</nav>
-		<div class="tab-content" id="nav-tabContent">
-			<div aria-labelledby="nav-home-tab" class="tab-pane fade show active" id="nav-home" role="tabpanel"
-			     style="margin-top:3%">
+	<div>
+		<ul class="nav nav-tabs" id="myTab">
+			<li class="nav-item">
+				<a class="nav-link active" data-toggle="tab" href="#createGroupTab">Create Group</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#groupsTab">Teaching Groups</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#authorisationTab">Account Authorisation</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane fade show active" id="createGroupTab">
 				<h3>Create Group</h3>
 				<section style="margin-right:50%;margin-top:1%">
 					<form class="form-horizontal" id="group" method="post">
@@ -33,25 +46,23 @@
 
 				</section>
 			</div>
-			<div aria-labelledby="nav-profile-tab" class="tab-pane fade" id="nav-profile" role="tabpanel"
-			     style="margin-top:3%">
+			<div class="tab-pane fade" id="groupsTab">
 				<h3>Select Groups</h3>
 				<section style="margin-right:50%;margin-top:1%">
 					<form class="form-check" id="selectGroups" method="post">
 
 						<h5>Taught groups:</h5><br>
-						{{ the_selectedgroups }}<br>
 
 						{% for group in the_allGroups%}
 
-							{% if group in the_teachersGroups %}
+						{% if group in the_teachersGroups %}
 
-							<input name="group" type="checkbox" value="{{group}}" checked>
-							<label class="g" style="margin-left:10px" >{{group}}</label><br>
-							{% else %}
-							<input name="group" type="checkbox" value="{{group}}">
-							<label class="g" style="margin-left:10px">{{group}}</label><br>
-							{% endif %}
+						<input checked name="group" type="checkbox" value="{{group}}">
+						<label class="g" style="margin-left:10px">{{group}}</label><br>
+						{% else %}
+						<input name="group" type="checkbox" value="{{group}}">
+						<label class="g" style="margin-left:10px">{{group}}</label><br>
+						{% endif %}
 						{% endfor %}
 
 
@@ -61,9 +72,47 @@
 
 				</section>
 			</div>
-		</div>
+			<div class="tab-pane fade" id="authorisationTab">
+				<section>
+					<h3>Authorisation</h3>
 
-	</section>
+					<form id="authorisationForm" method="POST">
+						<div class="form-group"><h1 id="test"></h1>
+							<label>Select a group:</label>
+							<select class="studentGroup form-control" id="studentGroup"
+							        name="studentGroup" onchange="this.form.submit() ">
+								<option selected hidden  value="{{session['g']}}">{{session['g']}}</option>
+								{% for tgroup in the_teachersGroups%}
+
+								<option value="{{tgroup}}">{{tgroup}}</option>
+								{% endfor %}
+							</select>
+
+
+						</div>
+
+					</form>
+
+
+				</section>
+				<section>
+
+						<form id="authentication" method="post">
+							{% for student in the_students %}
+								{% if student[2] == '1' %}
+								<input name="userInformation" type="checkbox" checked value="{{student[3]}}">
+								{% else %}
+								<input name="userInformation" type="checkbox" for="userInformation" value="{{student[3]}}">
+								{% endif %}
+								<label>{{student[0]}} {{student[1]}}</label><br>
+							{% endfor %}
+
+							<input class="btn btn-info" type="submit" value="Authorize">
+						</form>
+				</section>
+			</div>
+		</div>
+	</div>
 </section>
 
 {% endblock %}

@@ -1,53 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Register</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+	<meta charset="utf-8">
+	<title>Register</title>
+	<link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet">
+	<link href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" rel="stylesheet">
 </head>
 <body>
 <h1 align="center">Math's Quiz Generator</h1>
 <div class="register">
-    <h1>Register</h1>
-    <div class="links">
-        <a href="{{ url_for('login') }}">Login</a>
-        <a href="{{ url_for('register') }}" class="active">Register</a>
-    </div>
-    <form action="{{ url_for('register') }}" method="post" autocomplete="off">
-        <label for="teacher">
-            <i class="fas fa-chalkboard-teacher"></i>
-        </label>
-        <select name="teacher" id="teacher" onchange="asd()" onselect="asd()" required>
-            <option value="" disabled selected hidden>Are you a teacher?</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
+	<h1>Register</h1>
+	<div class="links">
+		<a href="{{ url_for('login') }}">Login</a>
+		<a class="active" href="{{ url_for('register') }}">Register</a>
+	</div>
+	<form action="{{ url_for('register') }}" autocomplete="off" method="post">
+		<label for="teacher">
+			<i class="fas fa-chalkboard-teacher"></i>
+		</label>
+		<select id="teacher" name="teacher" onchange="asd()" onselect="asd()" required>
+			<option disabled hidden selected value="">Are you a teacher?</option>
+			<option value="true">Yes</option>
+			<option value="false">No</option>
+		</select>
 
-        <label for="username">
-            <i class="fas fa-user"></i>
-        </label>
-        <input type="text" name="username" placeholder="Username" id="username" required>
-        <label for="password">
-            <i class="fas fa-lock"></i>
-        </label>
-        <input type="password" name="password" placeholder="Password" id="password" required>
-        <label for="email">
-            <i class="fas fa-envelope"></i>
-        </label>
-        <input type="email" name="email" placeholder="Email" id="email" required>
-        <label id="groupLabel" for="group">
-            <i class="fas fa-users"></i>
-        </label>
-        <select name="group" id="group" required>
-            <option value="" disabled selected hidden>Group</option>
-            {% for group in the_studentGroups%}
-                <option value="{{group}}">{{group}}</option>
+		<label for="username">
+			<i class="fas fa-user"></i>
+		</label>
+		<input id="username" name="username" placeholder="Username" required type="text">
 
-            {% endfor %}
-        </select>
+		<label for="password">
+			<i class="fas fa-lock"></i>
+		</label>
+		<input id="password" name="password" placeholder="Password" required type="password">
 
-        <script type="text/javascript">
+		<label for="email">
+			<i class="fas fa-envelope"></i>
+		</label>
+		<input id="email" name="email" placeholder="Email" required type="email">
+
+
+		<label for="firstname" id="firstnameLabel">
+			<i class="fas fa-address-card"></i>
+		</label>
+		<input id="firstname" name="firstname" placeholder="First name" required type="text">
+
+
+		<label for="surname" id="surnameLabel">
+			<i class="fas fa-address-card"></i>
+		</label>
+		<input id="surname" name="surname" placeholder="Surname" required type="text">
+
+		<label for="group" id="groupLabel">
+			<i class="fas fa-users"></i>
+		</label>
+		<select id="group" name="group" required>
+			<option disabled hidden selected value="">Group</option>
+			{% for group in the_studentGroups%}
+			<option value="{{group}}">{{group}}</option>
+
+			{% endfor %}
+		</select>
+
+		<script type="text/javascript">
             function asd(){
 
             var isTeacher = document.getElementById("teacher").value;
@@ -57,21 +72,37 @@
             document.getElementById("group").style.display = "none";
             document.getElementById("group").disabled = true;
             document.getElementById("groupLabel").style.display = "none";
+            document.getElementById("firstname").style.display = "none";
+            document.getElementById("firstname").disabled = true;
+            document.getElementById("firstnameLabel").style.display = "none";
+            document.getElementById("surname").style.display = "none";
+            document.getElementById("surname").disabled = true;
+            document.getElementById("surnameLabel").style.display = "none";
+
 
             }
             else{
             document.getElementById("groupLabel").style.display = "inherit";
             document.getElementById("group").style.display = "inherit";
             document.getElementById("group").disabled = false;
+            document.getElementById("firstnameLabel").style.display = "inherit";
+            document.getElementById("firstname").style.display = "inherit";
+            document.getElementById("firstname").disabled = false;
+            document.getElementById("surnameLabel").style.display = "inherit";
+            document.getElementById("surname").style.display = "inherit";
+            document.getElementById("surname").disabled = false;
             }
             }
 
 
-        </script>
 
-        <div class="msg">{{ msg }}</div>
-        <input type="submit" value="Register">
-    </form>
+
+
+		</script>
+
+		<div class="msg">{{ msg }}</div>
+		<input type="submit" value="Register">
+	</form>
 </div>
 </body>
 </html>

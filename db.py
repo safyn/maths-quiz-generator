@@ -1,9 +1,8 @@
 import DBcm
 import mysql.connector
-from qu import generateQuestions, calculateResults
+from qu import generateQuestions
 from datetime import datetime
 from datetime import timedelta
-
 
 connection = {
     "host": "127.0.0.1",
@@ -21,7 +20,6 @@ mydb = mysql.connector.connect(
 
 
 def createQuiz(data):
-    id = ""
 
     with DBcm.UseDatabase(connection) as mycursor:
         SQL = """INSERT into quiz (groupName,quizDate,startTime,endTime,quadraticQuestion,simultaneousQuestion,termsOfQuestion,quizName)
@@ -113,7 +111,7 @@ def checkQuiz(group, date):
 
     return id
 
-
+"""
 def getStudentResults(id):
     with DBcm.UseDatabase(connection) as mycursor:
         SQL = "select quizID,quizDate,username,result from results where userID = '%s'" % id
@@ -121,7 +119,7 @@ def getStudentResults(id):
         data = mycursor.fetchall()
 
     return data
-
+"""
 
 def getSelectedAnswers(quizID, userID):
     with DBcm.UseDatabase(connection) as mycursor:
@@ -211,8 +209,8 @@ def selectQuizes(group):
 
 def getParticipants(quizID):
     with DBcm.UseDatabase(connection) as mycursor:
-        SQL = "select result.userID,user.username , cast(avg(isCorrect)*100 as decimal(6,2)) from result,user " \
-              "where result.quizID = '%s' and user.userID = result.userID group by userID" % quizID
+        SQL = "select result.userID,student.username , cast(avg(isCorrect)*100 as decimal(6,2)) from result,student " \
+              "where result.quizID = '%s' and student.userID = result.userID group by userID" % quizID
 
         mycursor.execute(SQL)
         participants = mycursor.fetchall()
@@ -230,22 +228,54 @@ def createGroup(teacherID, groupName):
 
 def quizUserInfo(userID, quizID):
     with DBcm.UseDatabase(connection) as mycursor:
-        SQL = "select quiz.quizName, quiz.quizDate, user.username, cast(avg(isCorrect)*100 as decimal(6,2)) from " \
-              "quiz,user,result" \
-              " where result.userID = '%s' and result.quizID = '%s' and user.userID = result.userID group by result.userID" % (userID, quizID)
+        SQL = "select quiz.quizName, quiz.quizDate, student.username, cast(avg(isCorrect)*100 as decimal(6,2)) from " \
+              "quiz,student,result " \
+              "where result.userID = '%s' and result.quizID = '%s' and student.userID = result.userID group by result.userID" % (userID, quizID)
 
         mycursor.execute(SQL)
         userInfo = mycursor.fetchall()
 
         return listTuplesToList(userInfo)
 
-def changeTeacherGroups(groups,teacherID):
+
+def changeTeacherGroups(groups, teacherID):
     newgroups = groups.getlist('group')
     with DBcm.UseDatabase(connection) as mycursor:
         SQL = "delete from teacherGroups where teacherID = '%s'" % teacherID
         mycursor.execute(SQL)
         for group in newgroups:
-            SQL = "insert into teacherGroups values('%s','%s')" % (teacherID,group)
+            SQL = "insert into teacherGroups values('%s','%s')" % (teacherID, group)
             mycursor.execute(SQL)
 
+
+def getGroupStudents(group):
+    with DBcm.UseDatabase(connection) as mycursor:
+        SQL = "select name, surname, authenticated,userID from student where student.userGroup='%s'" % (group);
+
+        mycursor.execute(SQL)
+        userInfo = mycursor.fetchall()
+
+        return userInfo
+
+
+def authenticateUsers(userIDs, group):
+    users = userIDs.getlist('userInformation')
+    with DBcm.UseDatabase(connection) as mycursor:
+        SQL = "update student set authenticated = 0 where userGroup = '%s'" % group
+        mycursor.execute(SQL)
+        for user in users:
+            SQL = "update student set authenticated = 1 where userID ='%s'" % user
+            mycursor.execute(SQL)
+
+
+def userResults(student):
+
+    with DBcm.UseDatabase(connection) as mycursor:
+        SQL =  "select quiz.quizID,quizDate,quizName, cast(avg(isCorrect)*100 as decimal(6,2))" \
+               " from result,quiz where result.quizID = quiz.quizID and  userID = '%s' group by quizID" % student
+        mycursor.execute(SQL)
+
+        data = mycursor.fetchall()
+
+        return data
 

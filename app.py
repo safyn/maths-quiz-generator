@@ -19,15 +19,12 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
-
-
 connection = {
     "host": "127.0.0.1",
     "user": "root",
     "password": "root",
     "database": "quiz",
 }
-
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -46,7 +43,7 @@ def register():
             # Check if account exists using MySQL
             account = ""
             with DBcm.UseDatabase(connection) as cursor:
-                cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+                cursor.execute('SELECT * FROM student WHERE username = %s', (username,))
                 account = cursor.fetchone()
                 if not account:
                     cursor.execute('SELECT * FROM teacher WHERE username = %s', (username,))
@@ -70,7 +67,7 @@ def register():
             # Check if account exists using MySQL
             account = ""
             with DBcm.UseDatabase(connection) as cursor:
-                cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+                cursor.execute('SELECT * FROM student WHERE username = %s', (username,))
                 account = cursor.fetchone()
 
             # If account exists show error and validation checks
@@ -78,13 +75,16 @@ def register():
                 msg = 'Account already exists!'
 
             else:
-                # Account doesnt exists and the form data is valid, now insert new account into accounts table
+                name = request.form['firstname']
+                surname = request.form['surname']
+                # Account doesnt exists and the form data is valid, now insert new account into student table
                 with DBcm.UseDatabase(connection) as cursor:
-                    cursor.execute("INSERT INTO user (username,password,email,userGroup)" \
-                                   " VALUES ('%s', '%s', '%s', '%s')" % (username, password, email, group))
+                    cursor.execute("INSERT INTO student (username,password,email,userGroup,name,surname)" \
+                                   " VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (
+                                       username, password, email, group, name, surname))
                     id = cursor.lastrowid
                 msg = 'You have successfully registered!'
-                sendAuthenticationEmail(id)
+                sendAuthenticationEmail(id,username, name, surname, email, group)
 
     elif request.method == 'POST':
         # Form is empty... (no POST data)
@@ -106,7 +106,7 @@ def login():
             cursor.execute(SQL)
             teacher = cursor.fetchone()
             if teacher == None:
-                SQL = "select * from user where username='%s' and password='%s' and authenticated=1" % (
+                SQL = "select * from student where username='%s' and password='%s' and authenticated=1" % (
                     username, password)
                 cursor.execute(SQL)
                 student = cursor.fetchone()
@@ -176,17 +176,18 @@ def results():
                     data = request.form
 
                     db.answersToDatabase(data, quizID, session['id'], questions)
-
+                    """
                     result = calculateResults(data, questions)
                     r = "{:.2f}".format(result)
                     today = datetime.date.today()
+                    
                     with DBcm.UseDatabase(connection) as cursor:
                         SQL = "insert into results(userID,userGroup,result,quizDate,username,quizID)" \
                               " values('%s','%s','%s','%s','%s','%s')" % (
                                   session['id'], session['group'], r, str(today), session['username'], quizID)
 
                         cursor.execute(SQL)
-
+                    """
                     return redirect(url_for('getTest', quizID=quizID))
 
                 else:
@@ -211,8 +212,8 @@ def createQuiz():
 
 @app.route("/studentresults", methods=["GET", "POST"])
 def resultsPage():
-    results = db.getStudentResults(session['id'])
-    columnNames = ["Quiz ID", "Quiz Date", "Participant", "Final Score", "Transcript"]
+    results = db.userResults(session['id'])
+    columnNames = ["Quiz ID", "Quiz Date", "Quiz Name", "Final Score", "Transcript"]
     if request.method == 'POST':
         data = request.data
         return redirect(url_for("transcript.html"))
@@ -264,7 +265,6 @@ def groupSettings():
     teachersGroups = db.getStudentGroups(session['id'])
 
     if request.method == "POST":
-        msg = ""
 
         if 'groupName' in request.form:
             groupName = request.form['groupName']
@@ -274,13 +274,29 @@ def groupSettings():
             teachersGroups = db.getStudentGroups(session['id'])
             return render_template("groupSettings.html", the_msg=msg, the_allGroups=allgroups,
                                    the_teachersGroups=teachersGroups)
-        else:
+        elif 'group' in request.form:
             selectedgroups = request.form
             db.changeTeacherGroups(selectedgroups, session['id'])
             allgroups = db.getStudentGroups()
             teachersGroups = db.getStudentGroups(session['id'])
             return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
                                    the_selectedgroups=selectedgroups)
+        elif 'studentGroup' in request.form:
+
+            selectedGroup = request.form['studentGroup']
+            students = db.getGroupStudents(selectedGroup)
+            session['g'] = selectedGroup
+            return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,the_students=students,the_a=selectedGroup)
+
+        elif 'userInformation' in request.form:
+            info = request.form
+
+            b = session['g']
+            db.authenticateUsers(info,b)
+            students = db.getGroupStudents(b)
+            return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
+                                   the_info=info,the_students=students,the_a=b)
+
     else:
 
         return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups)
@@ -289,26 +305,33 @@ def groupSettings():
 u = secrets.token_urlsafe()
 
 
-def sendAuthenticationEmail(id):
+def sendAuthenticationEmail(id,username,name,surname,emailAddress,group):
     global u
 
-    email = Message('Hello', sender='mathsquizgenerator@gmail.com',
+    email = Message('Student account requires authentication', sender='mathsquizgenerator@gmail.com',
                     recipients=['mathsquizgenerator@gmail.com'])
     part2 = secrets.token_hex(16)
     link = u + part2
 
-    email.body = "Hello bla bla bla: http://127.0.0.1:5000/" + str(link) + "/" + str(id)
+    email.body = "This notification is generated automatically. \r\n\n" \
+                 "A new account has been created and requests authorisation to join group: " + str(group) + ".\r\n\n" \
+                 "Registration data: \r\n" \
+                  "Name: " + str(name) + "\r\n" \
+                  "Surname: " + str(surname) + "\r\n" \
+                  "Group: " + str(group) + "\r\n" \
+                  "Email: " + str(emailAddress) + "\r\n\n" \
+                  "The account can be authenticated manually inside of the quiz application or" \
+                                           " by clicking on the following link:  http://127.0.0.1:5000/" + str(link) + "/" + str(id)
     with mail.connect() as connector:
         connector.send(email)
 
 
-
-@app.route("/" + u + "<string:key>/<int:id>")
-def authenticate(key,id):
+@app.route("/" + u + "<string(length=32):key>/<int:id>")
+def authenticate(key, id):
     userID = id
 
     with DBcm.UseDatabase(connection) as cursor:
-        SQL = "update user set authenticated = 1 where userID = '%s'" % userID
+        SQL = "update student set authenticated = 1 where userID = '%s'" % userID
         cursor.execute(SQL)
 
     return "Account has been authenticated"
