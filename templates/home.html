@@ -42,6 +42,10 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
 	<a class="navbar-brand" style="color:white">Hello {{session['username']}}</a>
+	<button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+	        data-target="#navbarNav" data-toggle="collapse" type="button">
+		<span class="navbar-toggler-icon"></span>
+	</button>
 	<div class="collapse navbar-collapse">
 
 		<ul class="navbar-nav mr-auto">
@@ -77,14 +81,15 @@
 	</div>
 </nav>
 
-<section style="margin-left:10%;">
+<div class="container">
+
 
 	{% block body %}
 
 
 	{% endblock %}
 
-</section>
+</div>
 
 <!-- MathJax -->
 <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
@@ -92,6 +97,7 @@
         jax: ["input/TeX", "output/HTML-CSS"],
         displayAlign: "left"
     });
+
 
 
 

@@ -6,7 +6,7 @@ x, y = symbols(" x y ")
 
 
 def quadratic():
-    root1 = 1;
+    root1 = 1
     root2 = randint(-20, 20)
     root3 = randint(-20, 20)
     # generate quadratic equation
@@ -32,7 +32,6 @@ def quadratic():
     b = b[:-2]
     c = c[:-2]
     d = d[:-2]
-
 
     # question dictionary
     question = {
@@ -64,9 +63,11 @@ def quadratic():
 def simultaneous():
     x, y = symbols('x,y')
     equation1x = randint(-10, 10)
-    while equation1x == 0: equation1x = randint(-10,10)
+    while equation1x == 0:
+        equation1x = randint(-10,10)
     equation1y = randint(-10, 10)
-    while equation1y == 0: equation1y = randint(-10, 10)
+    while equation1y == 0:
+        equation1y = randint(-10, 10)
     equation1sol = randint(1, 50)
     equation2x = 0
     while equation2x == 0 or equation2x == (equation1x * -1) or equation2x == equation1x: equation2x = randint(-10, 10)
@@ -135,24 +136,30 @@ def simultaneous():
 
 def termsof():
     topX = randint(-10, 15) * x
-    while topX == 0: topX = randint(-10, 15) * x
+    while topX == 0:
+        topX = randint(-10, 15) * x
     topY = randint(-10, 20) * y
-    while topY == 0: topY = randint(-10, 20) * y
+    while topY == 0:
+        topY = randint(-10, 20) * y
     botY = randint(-10, 10) * y
-    while botY == 0: botY = randint(-10, 10) * y
+    while botY == 0:
+        botY = randint(-10, 10) * y
     botNum = randint(-10, 10)
-    while botNum == 0: botNum = randint(-10,10)
+    while botNum == 0:
+        botNum = randint(-10,10)
 
     top = topX + topY
     bot = botNum + botY
 
     leftSide = top / bot
     rightSide = randint(-10, 10) * x
-    while rightSide == 0 : rightSide = randint(-10,10) *x
+    while rightSide == 0:
+        rightSide = randint(-10, 10) *x
     equation = Eq(leftSide, rightSide)
 
     solution = solve(equation, y)
-    while solution == 0: topX = randint(-10, 15) * x
+    while solution == 0:
+        topX = randint(-10, 15) * x
 
     rightSideAfterMultiplication = expand(rightSide * bot)
     xy = rightSideAfterMultiplication.args[-1]
@@ -168,11 +175,11 @@ def termsof():
         action = sub
         topX *= -1
 
-    xy1 = xy.subs(x,1)
-    xy2 = xy1.subs(y,1)
-    if (xy2 <= -1):
+    xy1 = xy.subs(x, 1)
+    xy2 = xy1.subs(y, 1)
+    if xy2 <= -1:
         xy *= -1
-    elif (xy2 == 0):
+    elif xy2 == 0:
         xy = 55 * x * y
     else:
         xy *= -1
@@ -181,7 +188,6 @@ def termsof():
     n = simplify(top + topX + xy).args[0]
     if n == y:
         n = 1
-
 
     b = []
     c = []
@@ -228,32 +234,20 @@ def termsof():
 
 
 def generateQuestions(numberList):
-    quesstionsList = []
+    questionList = []
 
     for q in range(numberList[0]):
         a = quadratic()
-        quesstionsList.append(a)
+        questionList.append(a)
 
     for q in range(numberList[1]):
         b = simultaneous()
-        quesstionsList.append(b)
+        questionList.append(b)
 
     for q in range(numberList[2]):
         c = termsof()
-        quesstionsList.append(c)
+        questionList.append(c)
 
-    return quesstionsList
-
-
-def calculateResults(data, questionDict):
-    correctQuestions = 0
-    for i, q in enumerate(questionDict):
-        if q['solution'] == data[str(i + 1)]:
-            correctQuestions += 1
-
-    finalResult = (correctQuestions / len(questionDict)) * 100
-
-    return finalResult
-
+    return questionList
 
 

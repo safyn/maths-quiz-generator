@@ -4,91 +4,46 @@
 <br><h3 id="result"></h3>
 <h1>{{the_message}}</h1>
 
-<form id="quiz" method="POST" action="quiz" >
+<form action="quiz" id="quiz" method="POST">
 
-    {% for q in the_questions %}
-    <h2>Q{{the_questions.index(q)+1}} </h2>
+	{% for q in the_questions %}
+	<h2>Q{{the_questions.index(q)+1}} </h2>
 
-    <p>
-                <br>{{q['question']}}<br> <br>
-        <div style="margin-left:2%;">
-            \[{{q['equation']}}\]
-        </div>
-    </p>
-
-
-    <div id="labels">
-        <input class="radioa" type="radio" name="{{the_questions.index(q)+1}}" value="{{q['a']}}" required>
-        <label class="a">$${{q['a']}}$$</label> <br><br>
-        <input class="radiob" type="radio" name="{{the_questions.index(q)+1}}" value="{{q['b']}}" required>
-        <label class='b'>$${{q['b']}}$$</label> <br><br>
-        <input class="radioc" type="radio" name="{{the_questions.index(q)+1}}" value="{{q['c']}}" required>
-        <label class='c'>$${{q['c']}}$$</label> <br><br>
-        <input class="radiod" type="radio" name="{{the_questions.index(q)+1}}" value="{{q['d']}}" required>
-        <label class='d'>$${{q['d']}}$$</label> <br><br>
-    </div>
-    {% if the_data %}
-    <script type="text/javascript">
-           document.getElementById("result").innerHTML = "Congratulations! You got " + {{the_result}} + "%";
-    </script>
-
-    <p>
-             <h4>Selected answer</h4><br>
-        {% set question =  (the_questions.index(q)+1) | string() %}
-        $${{the_data[question]}}$$<br>
-    </p>
-    <br><h3>Solution</h3><br>
-            {{q['step']}}
-
-    {% endif%}
-    {% endfor %}
-
-    {% if the_data %}
-
-    <script type="text/javascript">
-
-             var x = document.getElementsByClassName("a");
-             var y = document.getElementsByClassName("b");
-             var q = document.getElementsByClassName("c");
-             var s = document.getElementsByClassName("d");
-
-             var radioA = document.getElementsByClassName("radioa");
-             var radioB = document.getElementsByClassName("radiob");
-             var radioC = document.getElementsByClassName("radioc");
-             var radioD = document.getElementsByClassName("radiod");
+	<p>
+		<br>{{q['question']}}<br> <br>
+	<div style="margin-left:2%;">
+		\[{{q['equation']}}\]
+	</div>
+	</p>
 
 
-             for (i = 0; i < x.length; i++) {
-                 x[i].style.color = "green";
-                 y[i].style.color = "red";
-                 q[i].style.color = "red";
-                 s[i].style.color = "red";
-
-                 radioA[i].hidden = true;
-                 radioB[i].hidden = true;
-                 radioC[i].hidden = true;
-                 radioD[i].hidden = true;
-
-              }
-              document.getElementById("submitbutton").style.visibility = "hidden";
-              document.getElementById("result").innerHTML = "Congratulations! You got " + {{the_result}} + "%";
+	<div id="labels">
+		<input class="radioa" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['a']}}">
+		<label class="a">$${{q['a']}}$$</label> <br><br>
+		<input class="radiob" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['b']}}">
+		<label class='b'>$${{q['b']}}$$</label> <br><br>
+		<input class="radioc" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['c']}}">
+		<label class='c'>$${{q['c']}}$$</label> <br><br>
+		<input class="radiod" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['d']}}">
+		<label class='d'>$${{q['d']}}$$</label> <br><br>
+	</div>
 
 
+	{% endfor %}
 
-    </script>
+	<br><br><input class="btn btn-info" id="submitbutton" type="submit" value="Submit"><br><br>
+	{% if the_message %}
 
-    {% endif %}
-    <br><br><input type="submit" class="btn btn-info" id="submitbutton" value="Submit" ><br><br>
-    {% if the_message %}
-
-        <script type="text/javascript">
+	<script type="text/javascript">
             document.getElementById("submitbutton").style.visibility = "hidden";
-        </script>
-    {% elif the_data %}
-            <script type="text/javascript">
+
+	</script>
+	{% elif the_data %}
+	<script type="text/javascript">
             document.getElementById("submitbutton").style.visibility = "hidden";
-        </script>
-    {% endif %}
+
+	</script>
+	{% endif %}
 </form>
 
 {% endblock %}

@@ -10,7 +10,7 @@
 
 <script src="{{url_for('static', filename='scripts')}}"></script>
 {% if userInfo %}
-	<div style="margin-right:40%">
+	<div>
 		<table class="table">
 			<thead>
 			<tr>
@@ -32,9 +32,8 @@
 
 <p>
     {{question['question']}}<br> <br>
-<div style="margin-left:2%;">
+
     \[{{question['equation']}}\]
-</div>
 </p>
 
 

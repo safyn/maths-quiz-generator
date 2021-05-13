@@ -42,15 +42,14 @@ def createQuiz(data):
 
 
 def questionsToDatabase(questions, quizID):
-    sql = ""
+
     l = []
-    s = ""
+
     for i, mydict in enumerate(questions):
-        placeholders = ', '.join(['%s'] * len(mydict))
+
         columns = "quizID, " + "questionNumber," + ', '.join(str(x) for x in mydict.keys())
         values = '"' + str(quizID) + '",' + '"' + str(i) + '"' + ', ' + ','.join(
             '"' + str(x) + '"' for x in mydict.values())
-        sql += "INSERT INTO %s ( %s ) VALUES ( %s );" % ('question', columns, values)
         s = "INSERT INTO %s ( %s ) VALUES ( %s );" % ('question', columns, values)
         l.append(s.translate(str.maketrans({"-": r"\-",
                                             "]": r"\]",
@@ -60,7 +59,7 @@ def questionsToDatabase(questions, quizID):
                                             "*": r"\*",
                                             ".": r"\.",
                                             "/": r"/"})))
-        s = ""
+
 
     with DBcm.UseDatabase(connection) as mycursor:
         for i in l:
@@ -111,15 +110,6 @@ def checkQuiz(group, date):
 
     return id
 
-"""
-def getStudentResults(id):
-    with DBcm.UseDatabase(connection) as mycursor:
-        SQL = "select quizID,quizDate,username,result from results where userID = '%s'" % id
-        mycursor.execute(SQL)
-        data = mycursor.fetchall()
-
-    return data
-"""
 
 def getSelectedAnswers(quizID, userID):
     with DBcm.UseDatabase(connection) as mycursor:
@@ -131,9 +121,7 @@ def getSelectedAnswers(quizID, userID):
 
 
 def answersToDatabase(answers, quizID, userID, questions):
-    sql = ""
     l = []
-    isCorrect = 0
     for i, mydict in enumerate(answers):
         if questions[i].get('solution') == answers[mydict]:
             isCorrect = 1
