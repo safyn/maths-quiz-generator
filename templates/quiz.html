@@ -1,9 +1,24 @@
 {% extends 'home.html' %}
 {% block body %}
 
+<style>
+	div.container{
+	  overflow:auto;
+	  overflow-y: hidden;
+
+}
+@media only screen and (max-width: 450px) {
+  div.container {
+    font-size:12px;
+    margin-right:80%;
+
+  }
+}
+
+</style>
 <br><h3 id="result"></h3>
 <h1>{{the_message}}</h1>
-
+<div class="container">
 <form action="quiz" id="quiz" method="POST">
 
 	{% for q in the_questions %}
@@ -37,15 +52,17 @@
 	<script type="text/javascript">
             document.getElementById("submitbutton").style.visibility = "hidden";
 
+
 	</script>
 	{% elif the_data %}
 	<script type="text/javascript">
             document.getElementById("submitbutton").style.visibility = "hidden";
 
+
 	</script>
 	{% endif %}
 </form>
-
+</div>
 {% endblock %}
 
 

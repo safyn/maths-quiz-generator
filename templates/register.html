@@ -9,16 +9,16 @@
 <body>
 <h1 align="center">Math's Quiz Generator</h1>
 <div class="register">
-	<h1>Register</h1>
+	<h1 id="registrationType">Registration</h1>
 	<div class="links">
-		<a href="{{ url_for('login') }}">Login</a>
-		<a class="active" href="{{ url_for('register') }}">Register</a>
+		<a href="/">Login</a>
+		<a class="active" href="/register">Register</a>
 	</div>
 	<form action="{{ url_for('register') }}" autocomplete="off" method="post">
 		<label for="teacher">
 			<i class="fas fa-chalkboard-teacher"></i>
 		</label>
-		<select id="teacher" name="teacher" onchange="asd()" onselect="asd()" required>
+		<select id="teacher" name="teacher" onchange="hideDisplayElements()" onselect="hideDisplayElements()" required>
 			<option disabled hidden selected value="">Are you a teacher?</option>
 			<option value="true">Yes</option>
 			<option value="false">No</option>
@@ -63,7 +63,7 @@
 		</select>
 
 		<script type="text/javascript">
-            function asd(){
+            function hideDisplayElements(){
 
             var isTeacher = document.getElementById("teacher").value;
 
@@ -78,7 +78,7 @@
             document.getElementById("surname").style.display = "none";
             document.getElementById("surname").disabled = true;
             document.getElementById("surnameLabel").style.display = "none";
-
+			document.getElementById("registrationType").innerHTML = "Teacher Registration";
 
             }
             else{
@@ -91,9 +91,9 @@
             document.getElementById("surnameLabel").style.display = "inherit";
             document.getElementById("surname").style.display = "inherit";
             document.getElementById("surname").disabled = false;
+            document.getElementById("registrationType").innerHTML = "Student Registration";
             }
             }
-
 
 
 

@@ -28,15 +28,19 @@
 
 		if (a[i].textContent == selectedAnswer[i].textContent) {
 	        radioA[i].checked = true;
+	        radioA[i].disabled = false;
 		}
 		else if (b[i].textContent == selectedAnswer[i].textContent) {
 		  radioB[i].checked = true;
+		  radioB[i].disabled = false;
 		}
 		else if (c[i].textContent == selectedAnswer[i].textContent) {
 		   radioC[i].checked = true;
+		   radioC[i].disabled = false;
 		}
 		else if (d[i].textContent == selectedAnswer[i].textContent) {
 		   radioD[i].checked = true;
+		   radioD[i].disabled = false;
         }
 
     }

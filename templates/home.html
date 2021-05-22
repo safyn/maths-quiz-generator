@@ -18,10 +18,11 @@
 		}
 		MathJax = {
 		chtml: { displayAlign: 'left' }
+		processEnvironments: true
 		};
 	</p>
 
-	<title>Quiz</title>
+	<title>Home</title>
 	<style>
         mjx-container[jax="CHTML"][display="true"] {
             display: inline;
@@ -32,9 +33,8 @@
 
         .MathJax_Display {
             text-align: left !important;
-            display: inline !important;
-        }
 
+        }
 
 	</style>
 </head>
@@ -46,7 +46,7 @@
 	        data-target="#navbarNav" data-toggle="collapse" type="button">
 		<span class="navbar-toggler-icon"></span>
 	</button>
-	<div class="collapse navbar-collapse">
+	<div class="collapse navbar-collapse" id="navbarNav">
 
 		<ul class="navbar-nav mr-auto">
 			<li class="nav-item active">
@@ -68,7 +68,7 @@
 			<li class="nav-item active">
 				<a class="nav-link" href="/teacherResults">Results<span class="sr-only">(current)</span></a>
 			</li>
-			</li>
+
 			<li class="nav-item active">
 				<a class="nav-link" href="/groupSettings">Group Settings<span class="sr-only">(current)</span></a>
 			</li>
@@ -86,9 +86,113 @@
 
 	{% block body %}
 
+	{% if not session['teacher']%}
+	{% if the_scores %}
+<div style="overflow:auto">
+	<h1>Student Progress</h1><br>
+	<h3>Current Average: {{the_average}}%</h3>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.1/chart.min.js"></script>
+	<canvas id="myChart" height="150" width="250"
+	        style="display: block; margin-top:5%; box-sizing: border-box;"></canvas>
+	<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
+
+var average = [{% for item in the_scores %}
+				"{{item}}",
+			{% endfor %}]
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for item in the_names %}
+					"{{item}}",
+				{% endfor %}],
+      datasets: [{
+      label: 'Progression',
+      data: [{% for item in the_scores %}
+				{{item}},
+			{% endfor %}],
+      borderColor: 'rgb(75, 192, 192)',
+      backgroundColor: 'rgb(75, 192, 192)',
+      tension: 0.1,
+      segment: {
+        borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2)') || down(ctx, 'rgb(192,75,75)'),
+      }
+    },{
+        label: "Moving average",
+        data: [{% for item in the_movingAverage %}
+				{{item}},
+			{% endfor %}],
+		tension: 0.1,
+        borderColor: 'rgb(50,160,230)',
+        backgroundColor: 'rgb(50,160,230)'
+    },
+    {
+        label: "Regression",
+        borderColor: 'rgb(192,75,75)',
+        backgroundColor: 'rgb(192,75,75)'
+    }],
+
+    },
+    options: {
+        scales: {
+            y: {
+                    beginAtZero: true,
+                    title: {
+                         display: true,
+                         text: 'Quiz Score'
+                     },
+                      ticks: {
+                    // Include a % sign with the label values
+                    callback: function(value) {
+                        return value + '%';
+                    }
+                }
+
+            },
+            x: {
+                      title: {
+                         display: true,
+                         text: 'Quiz Name',
+
+                     }
+            }
+        }
+    }
+});
+
+	</script>
+	{% else %}
+	<h2>No quiz have been completed</h2>
+	<p>Complete the first quiz to view the progress!!!</p>
+	{% endif %}
+
+	{% else %}
+	<h1>Student Progress</h1><br>
+
+	<form method="POST" role="form">
+		<div class="form-group"><h1 id="test"></h1>
+			<label>Select a group:</label>
+			<select class="studentGroup form-control" id="studentGroup" name="studentGroup"
+			        onchange="this.form.submit()">
+				<option disabled hidden selected>Quiz Group</option>
+				{% for group in the_studentGroups%}
+				{{group}}
+				<option value="{{group}}">{{group}}</option>
+				{% endfor %}
+			</select>
+
+
+		</div>
+
+	</form>
+
+
+	{% endif %}
 	{% endblock %}
-
+</div>
 </div>
 
 <!-- MathJax -->
@@ -97,8 +201,6 @@
         jax: ["input/TeX", "output/HTML-CSS"],
         displayAlign: "left"
     });
-
-
 
 
 </script>
@@ -110,6 +212,6 @@
 <script crossorigin="anonymous"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-</body>
+
 
 </html>

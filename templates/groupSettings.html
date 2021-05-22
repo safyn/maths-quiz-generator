@@ -12,12 +12,9 @@ $(document).ready(function(){
 });
 
 
-
-
 </script>
 
 <section style="margin-top:5%">
-
 
 	<div>
 		<ul class="nav nav-tabs" id="myTab">
@@ -33,8 +30,9 @@ $(document).ready(function(){
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane fade show active" id="createGroupTab">
-				<h3>Create Group</h3>
-				<section style="margin-top:1%">
+
+				<section style="margin-top:2%">
+					<h3>{{the_msg}}</h3>
 					<form class="form-horizontal" id="group" method="post">
 
 						<label>Enter group name</label>
@@ -47,11 +45,12 @@ $(document).ready(function(){
 				</section>
 			</div>
 			<div class="tab-pane fade" id="groupsTab">
-				<h3>Select Groups</h3>
-				<section style="margin-top:1%">
+
+				<section style="margin-top:2%">
+					<h3>Select Student Groups</h3>
 					<form class="form-check" id="selectGroups" method="post">
 
-						<h5>Taught groups:</h5><br>
+
 
 						{% for group in the_allGroups%}
 
@@ -73,7 +72,7 @@ $(document).ready(function(){
 				</section>
 			</div>
 			<div class="tab-pane fade" id="authorisationTab">
-				<section>
+				<section  style="margin-top:2%">
 					<h3>Authorisation</h3>
 
 					<form id="authorisationForm" method="POST">
@@ -81,7 +80,7 @@ $(document).ready(function(){
 							<label>Select a group:</label>
 							<select class="studentGroup form-control" id="studentGroup"
 							        name="studentGroup" onchange="this.form.submit() ">
-								<option selected hidden  value="{{session['g']}}">{{session['g']}}</option>
+								<option hidden selected value="{{session['g']}}">{{session['g']}}</option>
 								{% for tgroup in the_teachersGroups%}
 
 								<option value="{{tgroup}}">{{tgroup}}</option>
@@ -97,18 +96,18 @@ $(document).ready(function(){
 				</section>
 				<section>
 
-						<form id="authentication" method="post">
-							{% for student in the_students %}
-								{% if student[2] == '1' %}
-								<input name="userInformation" type="checkbox" checked value="{{student[3]}}">
-								{% else %}
-								<input name="userInformation" type="checkbox" for="userInformation" value="{{student[3]}}">
-								{% endif %}
-								<label>{{student[0]}} {{student[1]}}</label><br>
-							{% endfor %}
+					<form id="authentication" method="post">
+						{% for student in the_students %}
+						{% if student[2] == '1' %}
+						<input checked name="userInformation" type="checkbox" value="{{student[3]}}">
+						{% else %}
+						<input for="userInformation" name="userInformation" type="checkbox" value="{{student[3]}}">
+						{% endif %}
+						<label>{{student[0]}} {{student[1]}}</label><br>
+						{% endfor %}
 
-							<input class="btn btn-info" type="submit" value="Authorize">
-						</form>
+						<input class="btn btn-info" type="submit" value="Authorize">
+					</form>
 				</section>
 			</div>
 		</div>

@@ -6,60 +6,78 @@
     #labels label {
         color: red;
     }
+
+	div.container{
+		  overflow:auto;
+		  overflow-y: hidden;
+
+	}
+
+	@media only screen and (max-width: 450px) {
+	  div.container {
+	    font-size:12px;
+	    margin-right:80%;
+
+	  }
+	}
+
 </style>
 
 <script src="{{url_for('static', filename='scripts')}}"></script>
 {% if userInfo %}
-	<div>
-		<table class="table">
-			<thead>
-			<tr>
-				<th scope="col">Quiz Name: {{userInfo[0]}}</th>
-				<th scope="col">Quiz Date: {{userInfo[1]}}</th>
-				<th scope="col">Student Name: {{userInfo[2]}}</th>
-				<th scope="col">Score: {{userInfo[3]}}%</th>
+<div>
+	<table class="table">
+		<thead>
+		<tr>
+			<th scope="col">Quiz Name: {{userInfo[0]}}</th>
+			<th scope="col">Quiz Date: {{userInfo[1]}}</th>
+			<th scope="col">Student Name: {{userInfo[2]}}</th>
+			<th scope="col">Score: {{userInfo[3]}}%</th>
 
-			</tr>
-			</thead>
+		</tr>
+		</thead>
 
-		</table>
-	</div>
-
-{% endif %}
-{% for question in the_questions %}
-
-<h2>Q{{the_questions.index(question)+1}} </h2>
-
-<p>
-    {{question['question']}}<br> <br>
-
-    \[{{question['equation']}}\]
-</p>
+	</table>
+</div>
+<div class="container">
 
 
-    <div id="labels">
-        <input class="radioa" type="radio" disabled>
-        <label class="a">$${{question['a']}}$$</label> <br><br>
-        <input class="radiob" type="radio" disabled>
-        <label class='b'>$${{question['b']}}$$</label> <br><br>
-        <input class="radioc" type="radio" disabled>
-        <label class='c'>$${{question['c']}}$$</label> <br><br>
-        <input class="radiod" type="radio" disabled>
-        <label class='d'>$${{question['d']}}$$</label> <br><br>
-    </div>
+	{% endif %}
+	{% for question in the_questions %}
 
-<p>
-<h4>Selected answer</h4><br>
-$${{the_answers[the_questions.index(question)]}}$$<br>
-</p>
-<br>
-<h3>Solution</h3><br>
-<p>
-    {{question['step']}}
-</p>
-<label class = "selectedAnswer" hidden style="display:none" >$${{the_answers[the_questions.index(question)]}}$$</label>
-<label class="sol" hidden style="display:none">$${{question['solution']}}$$</label>
-<script src="{{url_for('static', filename='scripts')}}"></script>
-{% endfor %}
+	<h2>Q{{the_questions.index(question)+1}} </h2>
+
+
+	{{question['question']}}<br> <br>
+
+	\[{{question['equation']}}\]
+
+
+<div id="labels">
+	<input class="radioa" disabled="disabled" type="radio">
+	<label class="a">$${{question['a']}}$$</label> <br><br>
+	<input class="radiob" disabled type="radio">
+	<label class='b'>$${{question['b']}}$$</label> <br><br>
+	<input class="radioc" disabled type="radio">
+	<label class='c'>$${{question['c']}}$$</label> <br><br>
+	<input class="radiod" disabled type="radio">
+	<label class='d'>$${{question['d']}}$$</label> <br><br>
+</div>
+
+	<p>
+	<h4>Selected answer</h4><br>
+	$${{the_answers[the_questions.index(question)]}}$$<br>
+	</p>
+	<br>
+	<h3>Solution</h3><br>
+	<p>
+		{{question['step']}}
+	</p>
+	<label class="selectedAnswer" hidden style="display:none">$${{the_answers[the_questions.index(question)]}}$$</label>
+	<label class="sol" hidden style="display:none">$${{question['solution']}}$$</label>
+	<script src="{{url_for('static', filename='scripts')}}"></script>
+	{% endfor %}
+</div>
+
 
 {% endblock %}

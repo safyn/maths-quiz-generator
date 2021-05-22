@@ -5,6 +5,7 @@ import datetime
 import DBcm
 from flask_mail import Mail, Message
 import secrets
+
 # crate app object
 app = Flask(__name__)
 app.secret_key = "abbcd"
@@ -80,7 +81,7 @@ def register():
                                        username, password, email, group, name, surname))
                     id = cursor.lastrowid
                 msg = 'You have successfully registered!'
-                sendAuthenticationEmail(id,username, name, surname, email, group)
+                sendAuthenticationEmail(id, username, name, surname, email, group)
 
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg, the_studentGroups=studentGroups)
@@ -113,7 +114,6 @@ def login():
             session['teacher'] = teacher[4]
             session['group'] = 'A'
 
-
         elif student:
             session['access'] = True
             session['username'] = student[1]
@@ -142,8 +142,37 @@ def logout():
 def home():
     # if logged in
     if 'access' in session:
-        # display home page
-        return render_template("home.html", user=session['username'])
+        if 'teacher' in session:
+
+            studentGroups = db.getStudentGroups(session['id'])
+            if request.method == "POST":
+                group = request.form['studentGroup']
+
+                studentData = db.getStudents(group)
+
+                columnNames = ["Student ID", "Name", "Surname", "Current Progression"]
+                return render_template("studentGroups.html", the_results=studentData,the_columnNames=columnNames)
+
+            return render_template("home.html", the_studentGroups=studentGroups)
+        else:
+            # display home page
+            results = db.userResults(session['id'])
+            names = []
+            scores = []
+            movingAverage = []
+            currentAverage = 0
+
+            for index, i in enumerate(results):
+                names.append((i[2]))
+                scores.append(float(i[3]))
+                currentAverage += float(i[3])
+                movingAverage.append(currentAverage / (index + 1))
+            if len(scores) > 0:
+                overallAverage = round(sum(scores) / len(scores), 2)
+                return render_template("home.html", user=session['username'], the_names=names, the_scores=scores,
+                                    the_movingAverage=movingAverage, the_average=overallAverage)
+            else:
+                return render_template("home.html", user=session['username'])
     # not logged in
     else:
         # redirect to login page
@@ -207,18 +236,18 @@ def createQuiz():
             session['group'] = data['group']
             msg = "Quiz created successfully"
         # display page with possible messages
-        return render_template("createQuiz.html", the_message=msg,the_studentGroups=studentGroups)
+        return render_template("createQuiz.html", the_message=msg, the_studentGroups=studentGroups)
 
     # redirect to login page if not logged in
     else:
         return redirect("/")
+
 
 @app.route("/studentresults", methods=["GET", "POST"])
 def resultsPage():
     results = db.userResults(session['id'])
     columnNames = ["Quiz ID", "Quiz Date", "Quiz Name", "Final Score", "Transcript"]
     if request.method == 'POST':
-
         return redirect(url_for("transcript.html"))
 
     return render_template("studentresults.html", the_results=results, the_columnNames=columnNames)
@@ -289,16 +318,17 @@ def groupSettings():
             selectedGroup = request.form['studentGroup']
             students = db.getGroupStudents(selectedGroup)
             session['g'] = selectedGroup
-            return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,the_students=students,the_a=selectedGroup)
+            return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
+                                   the_students=students, the_a=selectedGroup)
 
         elif 'userInformation' in request.form:
             info = request.form
 
             b = session['g']
-            db.authenticateUsers(info,b)
+            db.authenticateUsers(info, b)
             students = db.getGroupStudents(b)
             return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
-                                   the_info=info,the_students=students,the_a=b)
+                                   the_info=info, the_students=students, the_a=b)
 
     else:
 
@@ -308,7 +338,7 @@ def groupSettings():
 u = secrets.token_urlsafe()
 
 
-def sendAuthenticationEmail(id,username,name,surname,emailAddress,group):
+def sendAuthenticationEmail(id, username, name, surname, emailAddress, group):
     global u
 
     email = Message('Student account requires authentication', sender='mathsquizgenerator@gmail.com',
@@ -319,12 +349,12 @@ def sendAuthenticationEmail(id,username,name,surname,emailAddress,group):
     email.body = "This notification is generated automatically. \r\n\n" \
                  "A new account has been created and requests authorisation to join group: " + str(group) + ".\r\n\n" \
                  "Registration data: \r\n" \
-                  "Name: " + str(name) + "\r\n" \
-                  "Surname: " + str(surname) + "\r\n" \
-                  "Group: " + str(group) + "\r\n" \
-                  "Email: " + str(emailAddress) + "\r\n\n" \
-                  "The account can be authenticated manually inside of the quiz application or" \
-                                           " by clicking on the following link:  http://127.0.0.1:5000/" + str(link) + "/" + str(id)
+                "Name: " + str(name) + "\r\n" \
+                "Surname: " + str(surname) + "\r\n" \
+                "Group: " + str(group) + "\r\n" \
+                "Email: " + str(emailAddress) + "\r\n\n" \
+                 "The account can be authenticated manually inside of the quiz application or" \
+                " by clicking on the following link:  http://127.0.0.1:5000/" + str(link) + "/" + str(id)
     with mail.connect() as connector:
         connector.send(email)
 
@@ -339,6 +369,28 @@ def authenticate(key, id):
 
     return "Account has been authenticated"
 
+
+@app.route("/studentProgress/<string:studentID>", methods=["GET", "POST"])
+def studentProgress(studentID):
+
+            results = db.userResults(studentID)
+            names = []
+            scores = []
+            movingAverage = []
+            currentAverage = 0
+
+            for index, i in enumerate(results):
+                names.append((i[2]))
+                scores.append(float(i[3]))
+                currentAverage += float(i[3])
+                movingAverage.append(currentAverage / (index + 1))
+            if len(scores) > 0:
+                overallAverage = round(sum(scores) / len(scores), 2)
+
+                return render_template("studentProgress.html", the_names=names, the_scores=scores,
+                                the_movingAverage=movingAverage, the_average=overallAverage)
+            else:
+                return render_template("studentProgress.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

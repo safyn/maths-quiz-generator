@@ -1,6 +1,8 @@
 from random import randint
-from sympy import Eq, symbols, solve, Mul, Add, init_printing, sqrt, Rational, simplify, expand, factor
-from sympy.printing import latex, print_latex
+from sympy import Eq, symbols, solve, Mul, Add, sqrt, simplify, expand, factor
+from latex import build
+from sympy.printing import latex
+
 
 x, y = symbols(" x y ")
 
@@ -34,8 +36,9 @@ def quadratic():
     d = d[:-2]
 
     # question dictionary
+    # question dictionary
     question = {
-        "question": r"$$\text{Use the quadratic formula: }$$" + r"x = $${-b \pm \sqrt{b^2-4ac} \over 2a}$$ " +
+        "question": r"$$\text{Use the quadratic formula: }$$" + r"$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$ " +
                     r"$$\text{to find the roots of the following equation: }$$",
         "equation": e,
         "solution": a,
@@ -43,18 +46,24 @@ def quadratic():
         "b": b + " \\right]",
         "c": c + " \\right]",
         "d": d + " \\right]",
-        "step": r"$$\displaylines{ " +
-                 r"\text{The coefficients from quadratic equation are:} a = 1, b=" + latex(root2) + ", c=" + latex(root3) + r" \hfil \\ \\ " +
-                 r"\text{After substitution of the coefficients the formula looks as follows: }" +  "x ={-( " +  latex(root2) +
-                 ") \pm \sqrt{" + latex(root2) + "^2- 4(" + latex(root1) + ")(" + latex(root3) + ")} \over 2(" + latex(root1) + r")} \hfil \\ \\" +
-                 r"\text{ After multiplying the above we get: }" + r"x ={-(" + latex(root2) + ") \pm \sqrt{" +
-                 latex(root2 * root2) + "-" + latex(4 * root1 * root3) + "} \over" + latex(2 * root1) + r"} \hfil \\ \\" +
-                 r"\text{Thus: }" + " x ={" + latex(-root2) + " \pm" + latex(sqrt(root2 * root2 - 4 * root1 * root3)) + "\over" +
-                 latex(2 * root1) + r"} \hfil \\ \\" +
-                 r"\text{After simplification we receive the following values for x: } "  + " x ={" +
-                 latex((-root2 - sqrt(root2 * root2 - 4 * root1 * root3)) / 2 * root1) + r"} \text{  or  } " +
-                 "x ={" + latex((-root2 + sqrt(root2 * root2 - 4 * root1 * root3)) / 2 * root1) + "}" +
-                 r"\hfil } $$"
+        "step":
+                r"\[ \displaylines{ " +
+                r"\text{The coefficients from quadratic equation are:} a = 1, b=" + latex(root2) + ", c=" + latex(
+            root3) + r" \hfil \\ \\ " +
+                r"\text{After substitution of the coefficients the formula looks as follows: }" + r" x ={-( " + latex(
+            root2) +
+                ") \pm \sqrt{" + latex(root2) + "^2- 4(" + latex(root1) + ")(" + latex(root3) + ")} \over 2(" + latex(
+            root1) + r")} \hfil \\ \\" +
+                r"\text{ After multiplying the above we get: }" + r"x ={-(" + latex(root2) + ") \pm \sqrt{" +
+                latex(root2 * root2) + "-" + latex(4 * root1 * root3) + "} \over" + latex(
+            2 * root1) + r"} \hfil \\ \\" +
+                r"\text{Thus: }" + " x ={" + latex(-root2) + " \pm" + latex(
+            sqrt(root2 * root2 - 4 * root1 * root3)) + "\over" +
+                latex(2 * root1) + r"} \hfil \\ \\" +
+                r"\text{After simplification we receive the following values for x: } " + " x ={" +
+                latex((-root2 - sqrt(root2 * root2 - 4 * root1 * root3)) / 2 * root1) + r"} \text{  or  } " +
+                "x ={" + latex((-root2 + sqrt(root2 * root2 - 4 * root1 * root3)) / 2 * root1) + "}" +
+                r"\hfil } \]"
     }
 
     return question
@@ -110,10 +119,10 @@ def simultaneous():
         "b": latex(b),
         "c": latex(c),
         "d": latex(d),
-        "step": r"$$\displaylines{ " +
-                 r"\text{To solve the following system of equations we going to use the elimination method.} \hfil  \\" +
-                 r"\text{The first step is to eliminate one of the variables. Lets eliminate the variable y by} \hfil  \\ " +
-                 r"\text{multiplying both equations so that when added the variables y will produce 0. } \hfil  \\ \\" +
+        "step": r"\[\displaylines{  " +
+                 r"\text{To solve the following system of equations we going to use the elimination method.} \hfil \\ \\ " +
+                 r"\text{The first step is to eliminate one of the variables. Lets eliminate the variable y by} \hfil \\ \\" +
+                 r"\text{multiplying both equations so that when added the variables y will produce 0. } \hfil \\ \\" +
                  latex(equation1) + " (" + latex(equation2y) + r") \hfil  \\" +
                  latex(equation2) + " (" + latex(equation1y) + r")  \hfil \\ \\  "
                  r"\text{After the multiplication we receive the following equations: } \hfil  \\ \\  " +
@@ -128,7 +137,7 @@ def simultaneous():
                  r"\text{After substitution we get: } \hfil \\ \\" + latex(yEquation) + r"\hfil  \\   " +
                  "y = " + latex(yValue) + r" \hfil  \\ \\   " +
                  r"\text{So, the solution is:} \hfil \\ \\" +
-                 r"x = " + latex(xValue) + r", y = " + latex(yValue) + r"\hfil } $$"
+                 r"x = " + latex(xValue) + r", y = " + latex(yValue) + r"\hfil } \]"
     }
 
     return ques

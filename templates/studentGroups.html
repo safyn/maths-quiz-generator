@@ -1,11 +1,10 @@
 {% extends 'home.html' %}
 {% block body %}
 
-<h2>Quiz Participants</h2>
 
-<section style="margin-top:5%">
+<section style="margin-top:5%" >
 
-	{%if the_results%}
+	{% if the_results%}
 	<table class="table table-hover">
 		<thead>
 		<tr>
@@ -17,18 +16,14 @@
 		<tbody>
 		{% for row in the_results %}
 		<tr>
-			<form action="{{url_for('getTest',quizID=qID ,userID =row[0])}}" id="bob" method="POST">
+			<form action="{{url_for('studentProgress',studentID = row[0])}}" id="student" method="POST">
 				{% for data in row %}
-				{% if data == row[-1]%}
-				<td>{{data}}%</td>
-				{% else %}
-				<td>{{data}}</td>
 
-				{% endif %}
+				<td>{{data}}</td>
 
 				{% endfor %}
 				<td style="cursor: pointer;">
-					<input class="btn btn-outline-info" for="bob" type="submit" value="View Test">
+					<input class="btn btn-outline-info"  type="submit" value="View Progress">
 				</td>
 			</form>
 
@@ -37,7 +32,8 @@
 
 		</tbody>
 	</table>
+	{% else %}
+	<H2>Group have no students</H2>
 	{% endif %}
 </section>
-
 {% endblock %}

@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+	<meta charset="utf-8">
+	<title>Login</title>
+	<link href="{{ url_for('static', filename='content.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet">
+	<link href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" rel="stylesheet">
 </head>
 <body>
 <h1 align="center">Math's Quiz Generator</h1>
 <div class="login">
-    <h1>Login</h1>
-    <div class="links">
-        <a href="{{ url_for('login') }}" class="active">Login</a>
-        <a href="{{ url_for('register') }}">Register</a>
-    </div>
-    <form method="post">
-        <label for="username">
-            <i class="fas fa-user"></i>
-        </label>
-        <input type="text" name="username" placeholder="Username" id="username" required>
-        <label for="password">
-            <i class="fas fa-lock"></i>
-        </label>
-        <input type="password" name="password" placeholder="Password" id="password" required>
-        <div class="msg" style="margin-left:10%;margin-right:10%;">{{ msg }}</div>
-        <input type="submit" value="Login">
-    </form>
+	<h1>Login</h1>
+	<div class="links">
+		<a class="active" href="/">Login</a>
+		<a href="/register">Register</a>
+	</div>
+	<form method="post">
+		<label for="username">
+			<i class="fas fa-user"></i>
+		</label>
+		<input id="username" name="username" placeholder="Username" required type="text">
+		<label for="password">
+			<i class="fas fa-lock"></i>
+		</label>
+		<input id="password" name="password" placeholder="Password" required type="password">
+		<div class="msg" style="margin-left:10%;margin-right:10%;">{{ msg }}</div>
+		<input type="submit" value="Login">
+	</form>
 </div>
 </body>
 </html>

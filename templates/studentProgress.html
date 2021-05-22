@@ -1,0 +1,89 @@
+{% extends 'home.html' %}
+{% block body %}
+
+
+
+		{% if the_scores %}
+<div style="overflow:auto">
+	<h1>Student Progress</h1><br>
+	<h3>Current Average: {{the_average}}%</h3>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.1/chart.min.js"></script>
+	<canvas id="myChart" height="150" width="250"
+	        style="display: block; margin-top:5%; box-sizing: border-box;"></canvas>
+	<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
+
+var average = [{% for item in the_scores %}
+				"{{item}}",
+			{% endfor %}]
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for item in the_names %}
+					"{{item}}",
+				{% endfor %}],
+      datasets: [{
+      label: 'Progression',
+      data: [{% for item in the_scores %}
+				{{item}},
+			{% endfor %}],
+      borderColor: 'rgb(75, 192, 192)',
+      backgroundColor: 'rgb(75, 192, 192)',
+      tension: 0.1,
+      segment: {
+        borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2)') || down(ctx, 'rgb(192,75,75)'),
+      }
+    },{
+        label: "Moving average",
+        data: [{% for item in the_movingAverage %}
+				{{item}},
+			{% endfor %}],
+		tension: 0.1,
+        borderColor: 'rgb(50,160,230)',
+        backgroundColor: 'rgb(50,160,230)'
+    },
+    {
+        label: "Regression",
+        borderColor: 'rgb(192,75,75)',
+        backgroundColor: 'rgb(192,75,75)'
+    }],
+
+    },
+    options: {
+        scales: {
+            y: {
+                    beginAtZero: true,
+                    title: {
+                         display: true,
+                         text: 'Quiz Score'
+                     },
+                      ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function(value) {
+                        return value + '%';
+                    }
+                }
+
+            },
+            x: {
+                      title: {
+                         display: true,
+                         text: 'Quiz Name',
+
+                     }
+            }
+        }
+    }
+});
+
+	</script>
+	{% else %}
+	<h2>No quiz have been completed</h2>
+	<p>Complete the first quiz to view the progress!!!</p>
+	{% endif %}
+
+
+{% endblock %}
