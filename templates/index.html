@@ -3,7 +3,6 @@
 <head>
 	<meta charset="utf-8">
 	<title>Login</title>
-	<link href="{{ url_for('static', filename='content.css') }}" rel="stylesheet">
 	<link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet">
 	<link href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" rel="stylesheet">
 </head>
@@ -19,11 +18,11 @@
 		<label for="username">
 			<i class="fas fa-user"></i>
 		</label>
-		<input id="username" name="username" placeholder="Username" required type="text">
+		<input id="username" name="username" placeholder="Username" type="text" required>
 		<label for="password">
 			<i class="fas fa-lock"></i>
 		</label>
-		<input id="password" name="password" placeholder="Password" required type="password">
+		<input id="password" name="password" placeholder="Password" type="password" required>
 		<div class="msg" style="margin-left:10%;margin-right:10%;">{{ msg }}</div>
 		<input type="submit" value="Login">
 	</form>

@@ -1,5 +1,8 @@
+<!-- Extend the style of the page  -->
 {% extends 'home.html' %}
+<!-- Start of page body  -->
 {% block body %}
+<!-- Script to save an active tab to the session storage, when refreshed load the saved tab from session  -->
 <script>
 $(document).ready(function(){
     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
@@ -11,101 +14,85 @@ $(document).ready(function(){
     }
 });
 
-
 </script>
 
+<title>Group Settings</title>
+<!-- Page content -->
 <section style="margin-top:5%">
-
+	<!-- Tab div: Initialise tabs and references -->
 	<div>
 		<ul class="nav nav-tabs" id="myTab">
+			<!-- Create student group tab -->
 			<li class="nav-item">
 				<a class="nav-link active" data-toggle="tab" href="#createGroupTab">Create Group</a>
 			</li>
+			<!-- View and authorise student tab -->
 			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#groupsTab">Teaching Groups</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#authorisationTab">Account Authorisation</a>
+				<a class="nav-link" data-toggle="tab" href="#authorisationTab">View Students</a>
 			</li>
 		</ul>
+		<!-- Content of the tabs -->
 		<div class="tab-content">
+			<!-- Content of "create group" tab -->
 			<div class="tab-pane fade show active" id="createGroupTab">
-
+				<!-- Tab content -->
 				<section style="margin-top:2%">
+					<!-- Confirmation message when tab was created -->
 					<h3>{{the_msg}}</h3>
+					<!-- Create new student group form -->
 					<form class="form-horizontal" id="group" method="post">
-
+						<!-- Set group name -->
 						<label>Enter group name</label>
 						<input class="form-control" name="groupName" type="text"><br><br>
-
+						<!-- Form submit button -->
 						<input class="btn btn-info" form="group" type="submit" value="Create Group">
 
 					</form>
 
 				</section>
 			</div>
-			<div class="tab-pane fade" id="groupsTab">
-
-				<section style="margin-top:2%">
-					<h3>Select Student Groups</h3>
-					<form class="form-check" id="selectGroups" method="post">
-
-
-
-						{% for group in the_allGroups%}
-
-						{% if group in the_teachersGroups %}
-
-						<input checked name="group" type="checkbox" value="{{group}}">
-						<label class="g" style="margin-left:10px">{{group}}</label><br>
-						{% else %}
-						<input name="group" type="checkbox" value="{{group}}">
-						<label class="g" style="margin-left:10px">{{group}}</label><br>
-						{% endif %}
-						{% endfor %}
-
-
-						<input class="btn btn-info" form="selectGroups" type="submit" value="Save groups">
-
-					</form>
-
-				</section>
-			</div>
+			<!-- Content of "view and authorise" tab  -->
 			<div class="tab-pane fade" id="authorisationTab">
-				<section  style="margin-top:2%">
+				<!-- Tab content  -->
+				<section style="margin-top:2%">
 					<h3>Authorisation</h3>
-
+					<!-- Select student group form -->
 					<form id="authorisationForm" method="POST">
-						<div class="form-group"><h1 id="test"></h1>
+						<div class="form-group">
+							<!-- Select a desired group of students-->
 							<label>Select a group:</label>
 							<select class="studentGroup form-control" id="studentGroup"
 							        name="studentGroup" onchange="this.form.submit() ">
+								<!-- After reload set the group of students to a previously selected group -->
 								<option hidden selected value="{{session['g']}}">{{session['g']}}</option>
+								<!-- Populate select tab with teacher groups -->
 								{% for tgroup in the_teachersGroups%}
-
 								<option value="{{tgroup}}">{{tgroup}}</option>
 								{% endfor %}
 							</select>
-
 
 						</div>
 
 					</form>
 
-
 				</section>
+				<!-- View/authenticate students - Displayed after the group of student was selected  -->
 				<section>
-
+					<!-- Authenticate student form -->
 					<form id="authentication" method="post">
+						<!-- For all students in selected group -->
 						{% for student in the_students %}
+						<!-- If  student is authorised create "checked" checkbox -->
 						{% if student[2] == '1' %}
 						<input checked name="userInformation" type="checkbox" value="{{student[3]}}">
+						<!-- If selected student is not authorised create "unchecked" checkbox -->
 						{% else %}
 						<input for="userInformation" name="userInformation" type="checkbox" value="{{student[3]}}">
 						{% endif %}
+						<!--Label the checkbox with a name and surname of the student -->
 						<label>{{student[0]}} {{student[1]}}</label><br>
 						{% endfor %}
-
+						<!-- Form submit button - Authenticates all the students where checkbox is "checked" -->
 						<input class="btn btn-info" type="submit" value="Authorize">
 					</form>
 				</section>

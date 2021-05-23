@@ -6,62 +6,92 @@
 	  overflow:auto;
 	  overflow-y: hidden;
 
-}
-@media only screen and (max-width: 450px) {
-  div.container {
-    font-size:12px;
-    margin-right:80%;
-
-  }
-}
+	}
+	@media only screen and (max-width: 450px) {
+	  div.container {
+	    font-size:12px;
+	  }
+	}
 
 </style>
-<br><h3 id="result"></h3>
+
 <h1>{{the_message}}</h1>
 <div class="container">
-<form action="quiz" id="quiz" method="POST">
-
-	{% for q in the_questions %}
-	<h2>Q{{the_questions.index(q)+1}} </h2>
-
-	<p>
-		<br>{{q['question']}}<br> <br>
-	<div style="margin-left:2%;">
-		\[{{q['equation']}}\]
-	</div>
-	</p>
+	{% if not session['teacher']%}
 
 
-	<div id="labels">
-		<input class="radioa" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['a']}}">
-		<label class="a">$${{q['a']}}$$</label> <br><br>
-		<input class="radiob" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['b']}}">
-		<label class='b'>$${{q['b']}}$$</label> <br><br>
-		<input class="radioc" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['c']}}">
-		<label class='c'>$${{q['c']}}$$</label> <br><br>
-		<input class="radiod" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['d']}}">
-		<label class='d'>$${{q['d']}}$$</label> <br><br>
-	</div>
+	<form action="quiz" id="quiz" method="POST">
+
+		{% for q in the_questions %}
+		<h2>Q{{the_questions.index(q)+1}} </h2>
+
+		<p>
+			<br>{{q['question']}}<br> <br>
+		<div style="margin-left:2%;">
+			\[{{q['equation']}}\]
+		</div>
+		</p>
 
 
-	{% endfor %}
+		<div id="labels">
+			<input class="radioa" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['a']}}">
+			<label class="a">$${{q['a']}}$$</label> <br><br>
+			<input class="radiob" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['b']}}">
+			<label class='b'>$${{q['b']}}$$</label> <br><br>
+			<input class="radioc" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['c']}}">
+			<label class='c'>$${{q['c']}}$$</label> <br><br>
+			<input class="radiod" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['d']}}">
+			<label class='d'>$${{q['d']}}$$</label> <br><br>
+		</div>
 
-	<br><br><input class="btn btn-info" id="submitbutton" type="submit" value="Submit"><br><br>
-	{% if the_message %}
 
-	<script type="text/javascript">
+		{% endfor %}
+
+		<br><br><input class="btn btn-info" id="submitbutton" type="submit" value="Submit"><br><br>
+		{% if the_message %}
+
+		<script type="text/javascript">
             document.getElementById("submitbutton").style.visibility = "hidden";
 
 
-	</script>
-	{% elif the_data %}
-	<script type="text/javascript">
+
+		</script>
+		{% elif the_data %}
+		<script type="text/javascript">
             document.getElementById("submitbutton").style.visibility = "hidden";
 
 
-	</script>
+
+		</script>
+		{% endif %}
+	</form>
+	{% else %}
+
+		{% for q in the_questions %}
+		<h2>Q{{the_questions.index(q)+1}} </h2>
+
+		<p>
+			<br>{{q['question']}}<br> <br>
+		<div style="margin-left:2%;">
+			\[{{q['equation']}}\]
+		</div>
+		</p>
+		<h4>Answers</h4><br>
+		<div >
+			1. <label class="a">$${{q['a']}}$$</label> <br><br>
+
+			2. <label class='b'>$${{q['b']}}$$</label> <br><br>
+
+			3. <label class='c'>$${{q['c']}}$$</label> <br><br>
+
+			4. <label class='d'>$${{q['d']}}$$</label> <br><br>
+		</div>
+
+		{% endfor %}
+
+
+
 	{% endif %}
-</form>
 </div>
 {% endblock %}
 

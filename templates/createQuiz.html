@@ -1,77 +1,89 @@
+<!-- Extend the style of the page  -->
 {% extends 'home.html' %}
+<!-- Start of page body  -->
 {% block body %}
-
-<br><h1>Create Quiz</h1>
+<title>Create Quiz</title>
+<br>
+<h1>Create Quiz</h1>
+<!-- Message to the user if quiz is not available -->
 <h1>{{the_message}}</h1>
+
 <section style="margin-top:5%;margin-right:5%">
-	<form id="quizCreationForm" method="post">
+    <!-- Create quiz form  -->
+    <form id="quizCreationForm" method="post">
+        <!--  Set name of the quiz  -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold">Name of the quiz:</label>
+            <input class="col-sm-6 " name="quizName" required type="text">
+        </div>
+        <!-- Select student group -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold" for="group">Choose a Group:</label>
+            <select class="col-sm-6 " id="group" name="group" required>
+                {% for group in the_studentGroups%}
+                <option value="{{group}}">{{group}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Set date of the quiz -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold">Quiz Date:</label>
+            <input class="col-sm-6 " name="quizDate" required type="date">
+        </div>
+        <!-- Set quiz starting time -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold">Start Time:</label>
+            <input class="col-sm-6 " name="startTime" required type="time">
+        </div>
+        <!-- Set quiz ending time -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold">End Time:</label>
+            <input class="col-sm-6 " name="endTime" required type="time">
+        </div>
+        <!-- Select number of quadratic equation questions ie. select number 0 to 5 -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold" for="group">Quadratic Equation:</label>
+            <select class="col-sm-6 " id="quadratic" name="quadratic" required>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
 
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold">Name of the quiz:</label>
-			<input class="col-sm-6 " name="quizName" required type="text">
-		</div>
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold" for="group">Choose a Group:</label>
+            </select>
+        </div>
+        <!-- Select number of simultaneous equation questions ie. select number 0 to 5  -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold" for="simultaneous">Simultaneous Equations:</label>
+            <select class="col-sm-6 " id="simultaneous" name="simultaneous" required>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
 
-			<select class="col-sm-6 " id="group" name="group" required>
-				{% for group in the_studentGroups%}
-				<option value="{{group}}">{{group}}</option>
+            </select>
+        </div>
+        <!-- Select number of "rearrange equation" questions ie. select number 0 to 5  -->
+        <div class="form-group row ">
+            <label class="col-sm-4 col-form-label font-weight-bold" for="termof">Rearrange the Equation:</label>
+            <select class="col-sm-6 " id="termof" name="termof" required>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
 
-				{% endfor %}
-			</select>
-		</div>
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold">Quiz Date:</label>
-			<input class="col-sm-6 " name="quizDate" required type="date">
-		</div>
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold">Start Time:</label>
-			<input class="col-sm-6 " name="startTime" required type="time">
-		</div>
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold">End Time:</label>
-			<input class="col-sm-6 " name="endTime" required type="time">
-		</div>
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold" for="group">Quadratic Equation:</label>
-			<select class="col-sm-6 " id="quadratic" name="quadratic" required>
-				<option value="0">0</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
+            </select>
+        </div>
+        <!-- Submit form button - generate and assign the quiz -->
+        <div style="margin-top: 5%">
+            <input form="quizCreationForm" class="btn btn-info" type="submit" value="Generate Quiz">
+        </div>
 
-			</select>
-		</div>
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold" for="simultaneous">Simultaneous Equations:</label>
-			<select class="col-sm-6 " id="simultaneous" name="simultaneous" required>
-				<option value="0">0</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
-
-			</select>
-		</div>
-		<div class="form-group row ">
-			<label class="col-sm-4 col-form-label font-weight-bold" for="termof">Rearrange the Equation:</label>
-			<select class="col-sm-6 " id="termof" name="termof" required>
-				<option value="0">0</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
-
-			</select>
-		</div>
-		<div style="margin-top: 5%">
-			<input form="quizCreationForm" class="btn btn-info" type="submit" value="Generate Quiz">
-		</div>
-
-	</form>
+    </form>
 </section>
 {% endblock %}

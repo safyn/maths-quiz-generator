@@ -186,7 +186,7 @@ def quiz():
 
         today = datetime.date.today()
         # check quiz availability
-        ID = db.checkQuiz(session['group'], today)
+        ID = db.checkQuizAvailability(session['group'], today)
         quizID = ID[0]
         # if not quiz then display the message
         if isinstance(quizID, str):
@@ -269,7 +269,7 @@ def getTest(quizID, userID=None):
 
 @app.route("/teacherResults", methods=["GET", "POST"])
 def teacherResults():
-    quizIDs = ""
+
     studentGroups = db.getStudentGroups(session['id'])
     if request.method == "POST":
         group = request.form['studentGroup']
@@ -279,7 +279,7 @@ def teacherResults():
         columnNames = ["Quiz ID", "Quiz Name", "Quiz Date", "Quiz Participants"]
         return render_template("teacherResults.html", the_studentGroups=studentGroups, the_results=quizData,
                                the_columnNames=columnNames)
-    return render_template("teacherResults.html", the_studentGroups=studentGroups, the_group=quizIDs)
+    return render_template("teacherResults.html", the_studentGroups=studentGroups)
 
 
 @app.route("/quizParticipants/<string:quizID>", methods=["GET", "POST"])
@@ -304,31 +304,23 @@ def groupSettings():
             msg = "Group " + str(groupName) + " has been created"
             allgroups = db.getStudentGroups()
             teachersGroups = db.getStudentGroups(session['id'])
-            return render_template("groupSettings.html", the_msg=msg, the_allGroups=allgroups,
-                                   the_teachersGroups=teachersGroups)
-        elif 'group' in request.form:
-            selectedgroups = request.form
-            db.changeTeacherGroups(selectedgroups, session['id'])
-            allgroups = db.getStudentGroups()
-            teachersGroups = db.getStudentGroups(session['id'])
-            return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
-                                   the_selectedgroups=selectedgroups)
-        elif 'studentGroup' in request.form:
+            return render_template("groupSettings.html", the_msg=msg, the_allGroups=allgroups,the_teachersGroups=teachersGroups)
 
+        elif 'studentGroup' in request.form:
             selectedGroup = request.form['studentGroup']
             students = db.getGroupStudents(selectedGroup)
             session['g'] = selectedGroup
-            return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
-                                   the_students=students, the_a=selectedGroup)
+            teachersGroups = db.getStudentGroups(session['id'])
+            return render_template("groupSettings.html", the_allGroups=allgroups,
+                                   the_students=students, the_teachersGroups=teachersGroups)
 
         elif 'userInformation' in request.form:
             info = request.form
-
             b = session['g']
             db.authenticateUsers(info, b)
             students = db.getGroupStudents(b)
             return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
-                                   the_info=info, the_students=students, the_a=b)
+                                   the_info=info, the_students=students)
 
     else:
 

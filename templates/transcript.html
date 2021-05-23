@@ -3,20 +3,20 @@
 {% block body %}
 
 <style>
+	/* Initial color of quiz questions */
     #labels label {
         color: red;
     }
-
+	/* Transcript container */
 	div.container{
 		  overflow:auto;
 		  overflow-y: hidden;
 
 	}
-
+	/* Adjust container font size once screen is smaller than 450px */
 	@media only screen and (max-width: 450px) {
 	  div.container {
 	    font-size:12px;
-	    margin-right:80%;
 
 	  }
 	}
@@ -39,10 +39,11 @@
 
 	</table>
 </div>
+{% endif %}
 <div class="container">
 
 
-	{% endif %}
+
 	{% for question in the_questions %}
 
 	<h2>Q{{the_questions.index(question)+1}} </h2>

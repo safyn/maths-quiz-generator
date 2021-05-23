@@ -82,7 +82,7 @@ def getQuizQuestions(quizID):
     return qlist
 
 
-def checkQuiz(group, date):
+def checkQuizAvailability(group, date):
     t = datetime.now().strftime("%H:%M:%S")
     # databaseTime = (datetime.now() + deltatime(hours=1)).strftime("%H:%M:%S")
     with DBcm.UseDatabase(connection) as mycursor:
@@ -217,20 +217,9 @@ def quizUserInfo(userID, quizID):
 
         return listTuplesToList(userInfo)
 
-
-def changeTeacherGroups(groups, teacherID):
-    newgroups = groups.getlist('group')
-    with DBcm.UseDatabase(connection) as mycursor:
-        SQL = "delete from teachergroups where teacherID = '%s'" % teacherID
-        mycursor.execute(SQL)
-        for group in newgroups:
-            SQL = "insert into teachergroups values('%s','%s')" % (teacherID, group)
-            mycursor.execute(SQL)
-
-
 def getGroupStudents(group):
     with DBcm.UseDatabase(connection) as mycursor:
-        SQL = "select name, surname, authenticated,userID from student where student.userGroup='%s'" % (group);
+        SQL = "select name, surname, authenticated,userID from student where student.userGroup='%s'" % group
 
         mycursor.execute(SQL)
         userInfo = mycursor.fetchall()
