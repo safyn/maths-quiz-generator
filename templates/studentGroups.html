@@ -1,28 +1,36 @@
+<!-- Extend the style of the home page  -->
 {% extends 'home.html' %}
+<!-- Start of page body  -->
 {% block body %}
-
-
+<!-- Table section  -->
 <section style="margin-top:5%" >
-
+	<!-- If selected group have assigned student-->
 	{% if the_results%}
+	<!-- table -->
 	<table class="table table-hover">
 		<thead>
 		<tr>
+			<!-- Populate columns -->
 			{% for name in the_columnNames%}
 			<th scope="col">{{name}}</th>
 			{% endfor %}
 		</tr>
 		</thead>
 		<tbody>
+		<!-- For reach row -->
 		{% for row in the_results %}
 		<tr>
+			<!-- Display progress chart form - once submited redirect and pass studentID as url parameter
+			 studentID is used to generate the chart -->
 			<form action="{{url_for('studentProgress',studentID = row[0])}}" id="student" method="POST">
+				<!-- Populate row with data  -->
 				{% for data in row %}
 
 				<td>{{data}}</td>
 
 				{% endfor %}
 				<td style="cursor: pointer;">
+					<!-- submit button  -->
 					<input class="btn btn-outline-info"  type="submit" value="View Progress">
 				</td>
 			</form>
@@ -32,6 +40,7 @@
 
 		</tbody>
 	</table>
+	<!-- Group is curently empty -->
 	{% else %}
 	<H2>Group have no students</H2>
 	{% endif %}

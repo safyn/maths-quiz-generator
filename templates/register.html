@@ -3,54 +3,70 @@
 <head>
 	<meta charset="utf-8">
 	<title>Register</title>
+	<!-- Local style sheet used to style the registration form -->
 	<link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet">
+	<!-- Stylesheet necessary to use the icons -->
 	<link href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" rel="stylesheet">
 </head>
 <body>
+<!-- Main header -->
 <h1 align="center">Math's Quiz Generator</h1>
+<!-- Registration box -->
 <div class="register">
+	<!-- Registration type header - changes depending on the account type being created -->
 	<h1 id="registrationType">Registration</h1>
+		<!-- Login and registration links -->
 	<div class="links">
+		<!-- Go to login page-->
 		<a href="/">Login</a>
-		<a class="active" href="/register">Register</a>
+		<!-- Go to registration page -->
+		<a class="active" href="/register">Registration</a>
 	</div>
+	<div class="line"></div>
+	<!-- Registration form -->
 	<form action="{{ url_for('register') }}" autocomplete="off" method="post">
+		<!-- Select box that specifies type of the account: Student or Teacher -->
 		<label for="teacher">
 			<i class="fas fa-chalkboard-teacher"></i>
 		</label>
+		<!-- On change call the functon that changes the form depending on option value -->
 		<select id="teacher" name="teacher" onchange="hideDisplayElements()" onselect="hideDisplayElements()" required>
 			<option disabled hidden selected value="">Are you a teacher?</option>
 			<option value="true">Yes</option>
 			<option value="false">No</option>
 		</select>
 
+		<!-- Username field -->
 		<label for="username">
-			<i class="fas fa-user"></i>
+			<i class="fas fa-user-alt"></i>
 		</label>
 		<input id="username" name="username" placeholder="Username" required type="text">
 
+		<!-- Password field -->
 		<label for="password">
-			<i class="fas fa-lock"></i>
+			<i class="fas fa-unlock-alt"></i>
 		</label>
 		<input id="password" name="password" placeholder="Password" required type="password">
 
+		<!-- Email field - student only -->
 		<label for="email">
-			<i class="fas fa-envelope"></i>
+			<i class="fas fa-envelope-open-text"></i>
 		</label>
 		<input id="email" name="email" placeholder="Email" required type="email">
 
-
+		<!-- First name field - student only -->
 		<label for="firstname" id="firstnameLabel">
 			<i class="fas fa-address-card"></i>
 		</label>
 		<input id="firstname" name="firstname" placeholder="First name" required type="text">
 
-
+		<!-- surname field - student only -->
 		<label for="surname" id="surnameLabel">
 			<i class="fas fa-address-card"></i>
 		</label>
 		<input id="surname" name="surname" placeholder="Surname" required type="text">
 
+		<!-- Group field: select a group student account will belong to (student only) -->
 		<label for="group" id="groupLabel">
 			<i class="fas fa-users"></i>
 		</label>
@@ -61,7 +77,8 @@
 
 			{% endfor %}
 		</select>
-
+		<!-- Hide/Display form elements depending on the value of 'teacher' select box -->
+		<!-- If teacher display teacher form , otherwise display student form  -->
 		<script type="text/javascript">
             function hideDisplayElements(){
 
@@ -95,12 +112,11 @@
             }
             }
 
-
-
-
 		</script>
 
+		<!-- Message to inform user that some fields like username might have been already used-->
 		<div class="msg">{{ msg }}</div>
+		<!-- Registration submit button -->
 		<input type="submit" value="Register">
 	</form>
 </div>

@@ -1,30 +1,41 @@
+<!-- Extend the style of the home page  -->
 {% extends 'home.html' %}
+<!-- Start of page body  -->
 {% block body %}
-
-
+<!-- page content  -->
 <section style="margin-top:5%" >
-
+	<!-- if student completed at least one quiz -->
 	{% if the_results%}
+	<!-- table -->
 	<table class="table table-hover">
 		<thead>
 		<tr>
+			<!-- Populate column names  -->
 			{% for name in the_columnNames%}
 			<th scope="col">{{name}}</th>
 			{% endfor %}
 		</tr>
 		</thead>
 		<tbody>
+		<!-- for all completed quizzes -->
 		{% for row in the_results %}
 		<tr>
+			<!-- Form used to display quiz transcript. Once submitted it passes quiz ID as the url parameter.
+			  The quizID is used to display quiz transcript-->
 			<form action="{{url_for('getTest',quizID = row[0])}}" id="bob" method="POST">
+				<!-- Populate row with data  -->
 				{% for data in row %}
+				<!-- Add '%' sign to last data value ( the quiz score)   -->
 				{% if data == row[-1]%}
 				<td>{{data}} %</td>
+				<!-- populate row with data  -->
 				{% else %}
 				<td>{{data}}</td>
 
 				{% endif %}
 				{% endfor %}
+				<!-- Form submit button. After the button is clicked it takes quizID value of selected row and
+				  redirects to a quiz transcript corresponding to that quizID-->
 				<td style="cursor: pointer;">
 					<input class="btn btn-outline-info" for="bob" type="submit" value="View Test">
 				</td>
@@ -35,6 +46,7 @@
 
 		</tbody>
 	</table>
+	<!-- Student did not complete any quizzes -->
 	{% else %}
 	<H2>No Quizzes have been completed</H2>
 	{% endif %}

@@ -8,7 +8,9 @@ import secrets
 
 # crate app object
 app = Flask(__name__)
-app.secret_key = "abbcd"
+# generate secret key for the application consisting of 64 hexadecimal numbers
+app.secret_key = "87ewQZr"
+
 # configure email settings
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -25,7 +27,7 @@ connection = {
     "database": "quiz",
 }
 
-
+# registration page
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # Output message if something goes wrong...
@@ -86,7 +88,7 @@ def register():
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg, the_studentGroups=studentGroups)
 
-
+# login page
 @app.route("/", methods=["GET", "POST"])
 def login():
     student = ""
@@ -129,7 +131,7 @@ def login():
 
         return render_template("index.html")
 
-
+# logout page
 @app.route("/logout")
 def logout():
     # clear session data
@@ -137,13 +139,14 @@ def logout():
     # redirect to login page
     return redirect("/")
 
-
+# home page consisting of student progres for both teacher and student
 @app.route("/home", methods=["GET", "POST"])
 def home():
     # if logged in
     if 'access' in session:
+        # if logged in as teacher
         if 'teacher' in session:
-
+            # get student groups assigned to the teacher
             studentGroups = db.getStudentGroups(session['id'])
             if request.method == "POST":
                 group = request.form['studentGroup']
@@ -154,23 +157,27 @@ def home():
                 return render_template("studentGroups.html", the_results=studentData,the_columnNames=columnNames)
 
             return render_template("home.html", the_studentGroups=studentGroups)
+        # logged in as student
         else:
-            # display home page
+            # get student info and quiz results
             results = db.userResults(session['id'])
+            # initialise empty lists for data necessary to draw the chart
             names = []
             scores = []
             movingAverage = []
             currentAverage = 0
-
+            # for separate results data, calculate average and moving average values
             for index, i in enumerate(results):
                 names.append((i[2]))
                 scores.append(float(i[3]))
                 currentAverage += float(i[3])
                 movingAverage.append(currentAverage / (index + 1))
+            # if student completed at least one quiz : get average and render page with progress chart
             if len(scores) > 0:
                 overallAverage = round(sum(scores) / len(scores), 2)
                 return render_template("home.html", user=session['username'], the_names=names, the_scores=scores,
                                     the_movingAverage=movingAverage, the_average=overallAverage)
+            # Student did not complete any quiz: render page with a message
             else:
                 return render_template("home.html", user=session['username'])
     # not logged in
@@ -178,12 +185,13 @@ def home():
         # redirect to login page
         return redirect("/")
 
-
+# quiz page
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
     # if logged in
     if 'access' in session:
 
+        # get todays date
         today = datetime.date.today()
         # check quiz availability
         ID = db.checkQuizAvailability(session['group'], today)
@@ -217,7 +225,7 @@ def quiz():
     else:
         return redirect("/")
 
-
+# create quiz page
 @app.route("/createQuiz", methods=["GET", "POST"])
 # Page where teacher is able to create quiz
 def createQuiz():
@@ -242,102 +250,136 @@ def createQuiz():
     else:
         return redirect("/")
 
-
+# student results page
 @app.route("/studentresults", methods=["GET", "POST"])
 def resultsPage():
+    # get student results
     results = db.userResults(session['id'])
+    # table column names
     columnNames = ["Quiz ID", "Quiz Date", "Quiz Name", "Final Score", "Transcript"]
+    # if submited redirect to a transcript of selected quiz
     if request.method == 'POST':
         return redirect(url_for("transcript.html"))
-
+    # not submited display table of student results
     return render_template("studentresults.html", the_results=results, the_columnNames=columnNames)
 
-
+# transcript page for student and teacher
 @app.route("/transcript/<string:quizID>", methods=["GET", "POST"])
 @app.route("/transcript/<string:quizID>/<int:userID>", methods=["GET", "POST"])
 def getTest(quizID, userID=None):
     id = quizID
+    # get quiz questions corresponding to quiz ID
     questions = db.getQuizQuestions(id)
+    # accessing as student
     if userID is None:
+        # get quiz information
         info = db.quizUserInfo(session['id'], quizID)
+        # get selected answers
         answers = db.getSelectedAnswers(id, session['id'])
+    # accessing as teacher
     else:
+        # get quiz information
         info = db.quizUserInfo(userID, quizID)
+        # get selected answers
         answers = db.getSelectedAnswers(id, userID)
+    # render page and display transcript
     return render_template("transcript.html", the_questions=questions, the_answers=answers, userInfo=info)
 
 
+# Quiz results of students belonging to the teacher
 @app.route("/teacherResults", methods=["GET", "POST"])
 def teacherResults():
-
+    # get student groups of the teacher
     studentGroups = db.getStudentGroups(session['id'])
+    # if submited i.e group was selected
     if request.method == "POST":
+        # get group
         group = request.form['studentGroup']
-        s = group
-        quizData = db.selectQuizes(s)
+        # get all quizzes assigned to that group
+        quizData = db.selectQuizes(group)
 
         columnNames = ["Quiz ID", "Quiz Name", "Quiz Date", "Quiz Participants"]
+        # render page and display table with all the quizzes - click on the quiz to display participants
         return render_template("teacherResults.html", the_studentGroups=studentGroups, the_results=quizData,
                                the_columnNames=columnNames)
+    # quiz not selected - display page with group select box
     return render_template("teacherResults.html", the_studentGroups=studentGroups)
 
-
+# quiz participants viewed by the teacher
 @app.route("/quizParticipants/<string:quizID>", methods=["GET", "POST"])
 def quizParticipants(quizID):
-    id = quizID
-    participants = db.getParticipants(id)
+    # get student participants of the quiz corresponding to quizID
+    participants = db.getParticipants(quizID)
     columnNames = ["User ID", "Username", "Quiz Score", "Transcript"]
+    # render page and display table with all quiz participants - click on the participant to see their quiz transcript
+    return render_template("quizParticipants.html", the_results=participants, the_columnNames=columnNames, qID=quizID)
 
-    return render_template("quizParticipants.html", the_results=participants, the_columnNames=columnNames, qID=id)
-
-
+# group setting page
 @app.route("/groupSettings", methods=["GET", "POST"])
 def groupSettings():
-    allgroups = db.getStudentGroups()
+    # get student groups belonging to teacher
     teachersGroups = db.getStudentGroups(session['id'])
 
+    # if submitted
     if request.method == "POST":
-
+        # if submitted form contains group name : then group was created
         if 'groupName' in request.form:
+            # get entered group name
             groupName = request.form['groupName']
+            # create group and assign it to the teacher
             db.createGroup(session['id'], groupName)
+            # display confirmation message
             msg = "Group " + str(groupName) + " has been created"
-            allgroups = db.getStudentGroups()
+            # get student groups belonging to teacher
             teachersGroups = db.getStudentGroups(session['id'])
-            return render_template("groupSettings.html", the_msg=msg, the_allGroups=allgroups,the_teachersGroups=teachersGroups)
+            # render page with confirmation message and updated values
+            return render_template("groupSettings.html", the_msg=msg,the_teachersGroups=teachersGroups)
 
+        # if submitted form contains student group : then group was selected
         elif 'studentGroup' in request.form:
+            # get selected group
             selectedGroup = request.form['studentGroup']
+            # get student of selected group
             students = db.getGroupStudents(selectedGroup)
+            # save selected group inside teachers session
             session['g'] = selectedGroup
-            teachersGroups = db.getStudentGroups(session['id'])
-            return render_template("groupSettings.html", the_allGroups=allgroups,
-                                   the_students=students, the_teachersGroups=teachersGroups)
+            # render page with list of student belonging to the selected group
+            return render_template("groupSettings.html",the_students=students, the_teachersGroups=teachersGroups)
 
+        # if submitted form contains user information : then student authentication was updated
         elif 'userInformation' in request.form:
+            # get student authentication information
             info = request.form
-            b = session['g']
-            db.authenticateUsers(info, b)
-            students = db.getGroupStudents(b)
-            return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups,
+            # get group name from the session storage
+            group = session['g']
+            # update students authorisation info
+            db.authenticateUsers(info, group)
+            # get student list with updated authorisation information
+            students = db.getGroupStudents(group)
+            # render page with updated list of students
+            return render_template("groupSettings.html", the_teachersGroups=teachersGroups,
                                    the_info=info, the_students=students)
 
+    # not submitted: display last accessed tab
     else:
+        return render_template("groupSettings.html", the_teachersGroups=teachersGroups)
 
-        return render_template("groupSettings.html", the_allGroups=allgroups, the_teachersGroups=teachersGroups)
 
-
+# generate url token
 u = secrets.token_urlsafe()
 
-
+# function that sends notification/authentication requests email
 def sendAuthenticationEmail(id, username, name, surname, emailAddress, group):
+    # get previously generated url token
     global u
-
+    # initialise email sender and recipients
     email = Message('Student account requires authentication', sender='mathsquizgenerator@gmail.com',
                     recipients=['mathsquizgenerator@gmail.com'])
+    # generate second part of url token
     part2 = secrets.token_hex(16)
+    # join two token parts
     link = u + part2
-
+    # email body : last line generates an authentication link by joining host, generated token and id of created account
     email.body = "This notification is generated automatically. \r\n\n" \
                  "A new account has been created and requests authorisation to join group: " + str(group) + ".\r\n\n" \
                  "Registration data: \r\n" \
@@ -347,42 +389,55 @@ def sendAuthenticationEmail(id, username, name, surname, emailAddress, group):
                 "Email: " + str(emailAddress) + "\r\n\n" \
                  "The account can be authenticated manually inside of the quiz application or" \
                 " by clicking on the following link:  http://127.0.0.1:5000/" + str(link) + "/" + str(id)
+
+    # send email
     with mail.connect() as connector:
         connector.send(email)
 
-
+# authentication link/ page, initialise url type
+# if link is accessed authenticate student with id contained inside url
 @app.route("/" + u + "<string(length=32):key>/<int:id>")
 def authenticate(key, id):
-    userID = id
 
+    # authenticate student record
     with DBcm.UseDatabase(connection) as cursor:
-        SQL = "update student set authenticated = 1 where userID = '%s'" % userID
+        SQL = "update student set authenticated = 1 where userID = '%s'" % id
         cursor.execute(SQL)
 
+    # return confirmation message
     return "Account has been authenticated"
 
-
+# Page containing overall progress of the student i.e chart
 @app.route("/studentProgress/<string:studentID>", methods=["GET", "POST"])
 def studentProgress(studentID):
+    # get student info and all results corresponding to studentID
+    results = db.userResults(studentID)
+    # initialise empty lists and variables that will contain the data necessary to draw the chart
+    names = []
+    scores = []
+    movingAverage = []
+    currentAverage = 0
+    # Process and separate scores and quiz names, calculate moving average points
+    for index, i in enumerate(results):
+        names.append((i[2]))
+        scores.append(float(i[3]))
+        currentAverage += float(i[3])
+        movingAverage.append(currentAverage / (index + 1))
+        # if student completed at least one quiz. ie if results are present
+    if len(scores) > 0:
+        # calculate overall score average
+        overallAverage = round(sum(scores) / len(scores), 2)
+        # get name and surname of the student
+        name = db.getStudentName(studentID)
+        # render page with student info and chart representing the progress of the student
+        return render_template("studentProgress.html", the_names=names, the_scores=scores,
+                        the_movingAverage=movingAverage, the_average=overallAverage,the_name = name)
+        # No quizzes completed: return page with a message
+    else:
+        return render_template("studentProgress.html")
 
-            results = db.userResults(studentID)
-            names = []
-            scores = []
-            movingAverage = []
-            currentAverage = 0
+# set debug mode to true
 
-            for index, i in enumerate(results):
-                names.append((i[2]))
-                scores.append(float(i[3]))
-                currentAverage += float(i[3])
-                movingAverage.append(currentAverage / (index + 1))
-            if len(scores) > 0:
-                overallAverage = round(sum(scores) / len(scores), 2)
-
-                return render_template("studentProgress.html", the_names=names, the_scores=scores,
-                                the_movingAverage=movingAverage, the_average=overallAverage)
-            else:
-                return render_template("studentProgress.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

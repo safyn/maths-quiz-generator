@@ -1,98 +1,75 @@
+<!-- Extend the style of the home page  -->
 {% extends 'home.html' %}
+<!-- Start of page body  -->
 {% block body %}
-
-<style>
-	div.container{
-	  overflow:auto;
-	  overflow-y: hidden;
-
-	}
-	@media only screen and (max-width: 450px) {
-	  div.container {
-	    font-size:12px;
-	  }
-	}
-
-</style>
-
+<!-- Message if quiz is not available  -->
 <h1>{{the_message}}</h1>
-<div class="container">
-	{% if not session['teacher']%}
+<!-- Student view of the quiz - Includes form and form elements -->
+{% if not session['teacher']%}
+<!-- Quiz form  -->
+<form action="quiz" id="quiz" method="POST">
+	<!-- For all quiz questions  -->
+	{% for q in the_questions %}
+	<!-- Display question number  -->
+	<h2>Q{{the_questions.index(q)+1}} </h2><br>
+	<!-- Display question description -->
+	{{q['question']}}<br> <br>
+	<!-- Display question equation -->
+	\[{{q['equation']}}\]<br><br>
+
+	<!-- Question answers   -->
+	<div id="labels">
+		<input class="radioa" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['a']}}">
+		<label class="a">$${{q['a']}}$$</label> <br><br>
+		<input class="radiob" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['b']}}">
+		<label class='b'>$${{q['b']}}$$</label> <br><br>
+		<input class="radioc" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['c']}}">
+		<label class='c'>$${{q['c']}}$$</label> <br><br>
+		<input class="radiod" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['d']}}">
+		<label class='d'>$${{q['d']}}$$</label> <br><br>
+	</div>
+
+	{% endfor %}
+	<!-- Submit quiz button  -->
+	<br><br><input class="btn btn-info" id="submitbutton" type="submit" value="Submit"><br><br>
+
+</form>
+
+<!-- Teacher view of the quiz - Only displays questions, no form   -->
+{% else %}
+
+<!-- For all quiz questions  -->
+{% for q in the_questions %}
+<!-- Display question number  -->
+<h2>Q{{the_questions.index(q)+1}} </h2><br>
+<!-- Display question description -->
+{{q['question']}}<br> <br>
+<!-- Display question equation -->
+\[{{q['equation']}}\]<br><br>
 
 
-	<form action="quiz" id="quiz" method="POST">
+<!-- Question answers   -->
+<h4>Answers</h4><br>
+<div>
+	1. <label class="a">$${{q['a']}}$$</label> <br><br>
 
-		{% for q in the_questions %}
-		<h2>Q{{the_questions.index(q)+1}} </h2>
+	2. <label class='b'>$${{q['b']}}$$</label> <br><br>
 
-		<p>
-			<br>{{q['question']}}<br> <br>
-		<div style="margin-left:2%;">
-			\[{{q['equation']}}\]
-		</div>
-		</p>
+	3. <label class='c'>$${{q['c']}}$$</label> <br><br>
 
+	4. <label class='d'>$${{q['d']}}$$</label> <br><br>
+</div>
 
-		<div id="labels">
-			<input class="radioa" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['a']}}">
-			<label class="a">$${{q['a']}}$$</label> <br><br>
-			<input class="radiob" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['b']}}">
-			<label class='b'>$${{q['b']}}$$</label> <br><br>
-			<input class="radioc" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['c']}}">
-			<label class='c'>$${{q['c']}}$$</label> <br><br>
-			<input class="radiod" name="{{the_questions.index(q)+1}}" required type="radio" value="{{q['d']}}">
-			<label class='d'>$${{q['d']}}$$</label> <br><br>
-		</div>
+{% endfor %}
 
 
-		{% endfor %}
-
-		<br><br><input class="btn btn-info" id="submitbutton" type="submit" value="Submit"><br><br>
-		{% if the_message %}
-
-		<script type="text/javascript">
+{% endif %}
+{% if the_message %}
+	<!-- Hide submit button when quiz is completed  -->
+	<script type="text/javascript">
             document.getElementById("submitbutton").style.visibility = "hidden";
 
-
-
-		</script>
-		{% elif the_data %}
-		<script type="text/javascript">
-            document.getElementById("submitbutton").style.visibility = "hidden";
-
-
-
-		</script>
-		{% endif %}
-	</form>
-	{% else %}
-
-		{% for q in the_questions %}
-		<h2>Q{{the_questions.index(q)+1}} </h2>
-
-		<p>
-			<br>{{q['question']}}<br> <br>
-		<div style="margin-left:2%;">
-			\[{{q['equation']}}\]
-		</div>
-		</p>
-		<h4>Answers</h4><br>
-		<div >
-			1. <label class="a">$${{q['a']}}$$</label> <br><br>
-
-			2. <label class='b'>$${{q['b']}}$$</label> <br><br>
-
-			3. <label class='c'>$${{q['c']}}$$</label> <br><br>
-
-			4. <label class='d'>$${{q['d']}}$$</label> <br><br>
-		</div>
-
-		{% endfor %}
-
-
+	</script>
 
 	{% endif %}
-</div>
 {% endblock %}
-
-

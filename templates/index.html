@@ -3,27 +3,41 @@
 <head>
 	<meta charset="utf-8">
 	<title>Login</title>
+	<!-- Local style sheet used to style the login form -->
 	<link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet">
+	<!-- Stylesheet necessary to use the icons -->
 	<link href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" rel="stylesheet">
 </head>
 <body>
+<!-- Main header -->
 <h1 align="center">Math's Quiz Generator</h1>
+<!-- Login box -->
 <div class="login">
+	<!-- Login header-->
 	<h1>Login</h1>
+	<!-- Login and registration links -->
 	<div class="links">
+		<!-- Go to login page-->
 		<a class="active" href="/">Login</a>
-		<a href="/register">Register</a>
+		<!-- Go to registration page -->
+		<a href="/register">Registration</a>
 	</div>
+	<div class="line"></div>
+	<!-- Login form -->
 	<form method="post">
+		<!-- Username field -->
 		<label for="username">
-			<i class="fas fa-user"></i>
+			<i class="fas fa-user-alt"></i>
 		</label>
 		<input id="username" name="username" placeholder="Username" type="text" required>
+		<!-- Password field -->
 		<label for="password">
-			<i class="fas fa-lock"></i>
+			<i class="fas fa-unlock-alt"></i>
 		</label>
 		<input id="password" name="password" placeholder="Password" type="password" required>
+		<!-- Message in case of an error ie. account is not authenticated or credentials are incorrect -->
 		<div class="msg" style="margin-left:10%;margin-right:10%;">{{ msg }}</div>
+		<!-- Login button -->
 		<input type="submit" value="Login">
 	</form>
 </div>

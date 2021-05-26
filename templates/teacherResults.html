@@ -1,28 +1,34 @@
+<!-- Extend the style of the home page  -->
 {% extends 'home.html' %}
+<!-- Start of page body  -->
 {% block body %}
-
-
+<!-- page content  -->
 <section style="margin-top:5%">
 
+	<!-- Form used to select a group of students teacher wishes to view the quiz transcripts for -->
 	<form method="POST" role="form">
-		<div class="form-group"><h1 id="test"></h1>
-			<label>Select a group:</label>
+		<div class="form-group">
+			<!-- Select form: The teacher selects from a list of groups assigned to their account  -->
+			<label>Select student group to view completed quizzes:</label>
+			<!-- Select tag: on change submit and display the table of quizzes of selected group  -->
 			<select class="studentGroup form-control" id="studentGroup" name="studentGroup"
 			        onchange="this.form.submit()">
 				<option disabled hidden selected>Quiz Group</option>
+				<!-- Populate select tag with groups assigned to the teacher  -->
 				{% for group in the_studentGroups%}
-				{{group}}
 				<option value="{{group}}">{{group}}</option>
 				{% endfor %}
 			</select>
 
 
 		</div>
-
 	</form>
+	<!-- If selected group of students completed at least one quiz. Display the table of quizzes assigned to that group -->
 	{%if the_results%}
+	<!-- Table of quizzes  -->
 	<table class="table table-hover">
 		<thead>
+		<!-- Populate column names of the table -->
 		<tr>
 			{% for name in the_columnNames%}
 			<th scope="col">{{name}}</th>
@@ -30,14 +36,20 @@
 		</tr>
 		</thead>
 		<tbody>
+		<!-- For each quiz data  -->
 		{% for row in the_results %}
 		<tr>
+			<!-- Form used to display quiz transcript. Once submitted it passes quiz ID as the url parameter.
+			  The quizID is used to display quiz transcript-->
 			<form action="{{url_for('quizParticipants',quizID = row[0])}}" id="bob" method="POST">
+				<!-- Populate row with quiz data  -->
 				{% for data in row %}
 
 				<td>{{data}}</td>
 
 				{% endfor %}
+				<!-- Submit button: Once submitted the page is redirected and the url parameter (quizID) is used
+				  to create a table of student that completed a selected quiz-->
 				<td style="cursor: pointer;">
 					<input class="btn btn-outline-info" for="bob" type="submit" value="View Test">
 				</td>

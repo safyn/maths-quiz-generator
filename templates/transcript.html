@@ -1,31 +1,21 @@
+<!-- Extend the style of the home page  -->
 {% extends 'home.html' %}
-
+<!-- Start of page body  -->
 {% block body %}
-
+<!-- Initially set all quiz answers to red  -->
 <style>
 	/* Initial color of quiz questions */
     #labels label {
         color: red;
     }
-	/* Transcript container */
-	div.container{
-		  overflow:auto;
-		  overflow-y: hidden;
 
-	}
-	/* Adjust container font size once screen is smaller than 450px */
-	@media only screen and (max-width: 450px) {
-	  div.container {
-	    font-size:12px;
-
-	  }
-	}
 
 </style>
-
+<!-- Include script that modifies the transcript to reflect an actual answers selected by a student  -->
 <script src="{{url_for('static', filename='scripts')}}"></script>
-{% if userInfo %}
+<!-- Transcript info -->
 <div>
+	<!-- Table containing quiz details includding : Quiz name, quiz date, name of the student and quiz score  -->
 	<table class="table">
 		<thead>
 		<tr>
@@ -39,41 +29,41 @@
 
 	</table>
 </div>
-{% endif %}
+<!-- Transcript container  -->
 <div class="container">
-
-
-
+	<!-- For all quiz questions  -->
 	{% for question in the_questions %}
-
-	<h2>Q{{the_questions.index(question)+1}} </h2>
-
-
+	<!-- Display question number  -->
+	<h2>Q{{the_questions.index(question)+1}} </h2><br>
+	<!-- Display question description -->
 	{{question['question']}}<br> <br>
+	<!-- Display question equation -->
+	\[{{question['equation']}}\]<br><br>
 
-	\[{{question['equation']}}\]
+	<!-- Question answers   -->
+	<div id="labels">
+		<input class="radioa" disabled="disabled" type="radio">
+		<label class="a">$${{question['a']}}$$</label> <br><br>
+		<input class="radiob" disabled type="radio">
+		<label class='b'>$${{question['b']}}$$</label> <br><br>
+		<input class="radioc" disabled type="radio">
+		<label class='c'>$${{question['c']}}$$</label> <br><br>
+		<input class="radiod" disabled type="radio">
+		<label class='d'>$${{question['d']}}$$</label> <br><br>
+	</div><br>
 
-
-<div id="labels">
-	<input class="radioa" disabled="disabled" type="radio">
-	<label class="a">$${{question['a']}}$$</label> <br><br>
-	<input class="radiob" disabled type="radio">
-	<label class='b'>$${{question['b']}}$$</label> <br><br>
-	<input class="radioc" disabled type="radio">
-	<label class='c'>$${{question['c']}}$$</label> <br><br>
-	<input class="radiod" disabled type="radio">
-	<label class='d'>$${{question['d']}}$$</label> <br><br>
-</div>
-
-	<p>
+	<!-- Display answer selected by the student   -->
 	<h4>Selected answer</h4><br>
-	$${{the_answers[the_questions.index(question)]}}$$<br>
-	</p>
-	<br>
+	$${{the_answers[the_questions.index(question)]}}$$<br><br>
+
+	<!-- Solution heading -->
 	<h3>Solution</h3><br>
+	<!-- Step by step solution to the question  -->
 	<p>
 		{{question['step']}}
 	</p>
+
+	<!-- Hidden labels used to compare quiz answers with answers selected by the student  -->
 	<label class="selectedAnswer" hidden style="display:none">$${{the_answers[the_questions.index(question)]}}$$</label>
 	<label class="sol" hidden style="display:none">$${{question['solution']}}$$</label>
 	<script src="{{url_for('static', filename='scripts')}}"></script>

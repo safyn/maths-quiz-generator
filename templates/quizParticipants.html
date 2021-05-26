@@ -1,24 +1,33 @@
+<!-- Extend the style of the home page  -->
 {% extends 'home.html' %}
+<!-- Start of page body  -->
 {% block body %}
-
+<!-- Header  -->
 <h2>Quiz Participants</h2>
 
+<!-- Section that displays students that took the given quiz.  -->
 <section style="margin-top:5%">
-
+	<!-- If someone completed the quiz-->
 	{%if the_results%}
 	<table class="table table-hover">
 		<thead>
 		<tr>
+			<!-- Generate column headers  -->
 			{% for name in the_columnNames%}
 			<th scope="col">{{name}}</th>
 			{% endfor %}
 		</tr>
 		</thead>
 		<tbody>
+		<!-- Generate rows-->
 		{% for row in the_results %}
 		<tr>
+			<!-- Form for quiz transcript, when submitted pass quizID and userID as parameters inside url.
+			  QuizID and userID are used to generate the transcript of the quiz-->
 			<form action="{{url_for('getTest',quizID=qID ,userID =row[0])}}" id="bob" method="POST">
+				<!-- Display row data -->
 				{% for data in row %}
+				<!-- Add '%' sign to the each value in last column -->
 				{% if data == row[-1]%}
 				<td>{{data}}%</td>
 				{% else %}
@@ -27,6 +36,7 @@
 				{% endif %}
 
 				{% endfor %}
+				<!-- View transcript submit button  -->
 				<td style="cursor: pointer;">
 					<input class="btn btn-outline-info" for="bob" type="submit" value="View Test">
 				</td>

@@ -13,6 +13,7 @@
 	<!-- Link for bootstrap -->
 	<link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
 	      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+	<link href="{{ url_for('static', filename='container.css') }}" rel="stylesheet">
 
 	<!-- MathJax aligning script -->
 	<p style="display:none">
@@ -150,9 +151,9 @@
             },
             {
                 // moving average line
-                label: "Moving average",
+                label: "Score moving average",
                     data: [{% for item in the_movingAverage %}
-            { { item } },
+            {{ item }},
             {% endfor %}],
             tension: 0.1,
                 borderColor: 'rgb(50,160,230)',
@@ -203,8 +204,9 @@
 		<form method="POST" role="form">
 			<div class="form-group">
 				<!-- Select group of students to view their charts-->
-				<label>Select a group:</label>
+				<label>Select student group to view the overall progress:</label>
 				<select class="studentGroup form-control" id="studentGroup" name="studentGroup" onchange="this.form.submit()">
+					<option disabled hidden selected>Quiz Group</option>
 					<!-- Populate select tag with groups of students assigned to the teacher -->
 					{% for group in the_studentGroups%}
 					{{group}}
