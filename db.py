@@ -1,6 +1,6 @@
 import DBcm
 
-from qu import generateQuestions
+from questions import generateQuestions
 from datetime import datetime
 from datetime import timedelta
 
@@ -181,7 +181,7 @@ def answersToDatabase(answers, quizID, userID, questions):
 
 
 def isCompleted(quizID, userID):
-    # This Function checks if the quiz was alreay completed by the student
+    # This Function checks if the quiz was already completed by the student
 
     # check if result table contain records corresponding to quizID and userID
     with DBcm.UseDatabase(connection) as mycursor:
@@ -274,7 +274,8 @@ def quizUserInfo(userID, quizID):
     with DBcm.UseDatabase(connection) as mycursor:
         SQL = "select quiz.quizName, quiz.quizDate, student.username, cast(avg(isCorrect)*100 as decimal(6,2)) from " \
               "quiz,student,result " \
-              "where result.userID = '%s' and result.quizID = '%s' and student.userID = result.userID group by result.userID" % (userID, quizID)
+              "where result.userID = '%s' and result.quizID = '%s' and quiz.quizID = result.quizID " \
+              "and student.userID = result.userID group by result.userID" % (userID, quizID)
 
         mycursor.execute(SQL)
         userInfo = mycursor.fetchall()
